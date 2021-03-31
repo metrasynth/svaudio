@@ -326,4 +326,6 @@ svaudio/media/
 
 .pytest_cache/
 
-
+.env
+svaudio/static/css/
+svaudio/static/js/
