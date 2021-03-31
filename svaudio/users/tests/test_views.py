@@ -10,11 +10,7 @@ from django.urls import reverse
 from svaudio.users.forms import UserChangeForm
 from svaudio.users.models import User
 from svaudio.users.tests.factories import UserFactory
-from svaudio.users.views import (
-    UserRedirectView,
-    UserUpdateView,
-    user_detail_view,
-)
+from svaudio.users.views import UserRedirectView, UserUpdateView, user_detail_view
 
 pytestmark = pytest.mark.django_db
 

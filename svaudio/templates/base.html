@@ -16,26 +16,26 @@
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
 
     {% block css %}
-    
+
 
     <!-- Your stuff: Third-party CSS libraries go here -->
     {% compress css %}
     <!-- This file stores project-specific CSS -->
-    
+
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
-    
+
     {% endcompress %}
     {% endblock %}
     <!-- Le javascript
     ================================================== -->
     {# Placed at the top of the document so pages load faster with defer #}
     {% block javascript %}
-      
+
       <!-- Vendor dependencies bundled as one file-->
       {% compress js %}
       <script defer src="{% static 'js/vendors.js' %}"></script>
       {% endcompress %}
-      
+
 
       <!-- place project specific Javascript in this file -->
       {% compress js %}
@@ -109,4 +109,3 @@
     {% endblock inline_javascript %}
   </body>
 </html>
- 
