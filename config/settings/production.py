@@ -114,7 +114,7 @@ COMPRESS_OFFLINE = True  # Offline compression is required when using Whitenoise
 COMPRESS_FILTERS = {
     "css": [
         "compressor.filters.css_default.CssAbsoluteFilter",
-        "compressor.filters.cssmin.rCSSMinFilter",
+        # "compressor.filters.cssmin.rCSSMinFilter",
     ],
     "js": ["compressor.filters.jsmin.JSMinFilter"],
 }
