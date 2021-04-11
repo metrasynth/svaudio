@@ -76,8 +76,9 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "svaudio.users.apps.UsersConfig",
     # Your stuff: custom apps go here
+    "svaudio.users.apps.UsersConfig",
+    "svaudio.apps.repo.apps.RepoConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
