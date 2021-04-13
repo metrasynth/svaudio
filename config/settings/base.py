@@ -73,12 +73,13 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
+    "graphene_django",
 ]
 
 LOCAL_APPS = [
     # Your stuff: custom apps go here
     "svaudio.users.apps.UsersConfig",
-    "svaudio.apps.repo.apps.RepoConfig",
+    "svaudio.apps.repo",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -312,3 +313,7 @@ REST_FRAMEWORK = {
 CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# graphene
+# ------------------------------------------------------------------------------
+GRAPHENE = {"SCHEMA": "svaudio.schema.schema"}
