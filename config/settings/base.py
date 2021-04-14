@@ -79,7 +79,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     # Your stuff: custom apps go here
     "svaudio.users.apps.UsersConfig",
-    "svaudio.apps.repo",
+    "svaudio.apps.repo.apps.RepoConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -317,3 +317,8 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # graphene
 # ------------------------------------------------------------------------------
 GRAPHENE = {"SCHEMA": "svaudio.schema.schema"}
+
+# repo
+# ------------------------------------------------------------------------------
+SVAUDIO_REPO_CACHE_PATH = str(APPS_DIR / "media" / "repo" / "cache")
+SVAUDIO_REPO_CACHE_URL = f"{MEDIA_URL}repo/cache/"

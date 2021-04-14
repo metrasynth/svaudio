@@ -1,6 +1,11 @@
+from pathlib import Path
+
+from django.conf import settings
 from django.db import models as m
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 
+from svaudio.apps.repo.tasks import start_fetch
 from svaudio.users.models import User
 
 
@@ -20,6 +25,7 @@ class File(m.Model):
         max_length=1,
         choices=FileType.choices,
         null=True,
+        blank=True,
         help_text="Type of file, if known.",
     )
     size = m.IntegerField(
@@ -29,22 +35,34 @@ class File(m.Model):
         help_text="When the file was cached.",
     )
     last_accessed_at = m.DateTimeField(
+        null=True,
+        blank=True,
         help_text="When the file was last accessed.",
     )
+
+    def filesystem_path(self) -> Path:
+        file_ext = {"M": "sunsynth", "P": "sunvox"}[self.file_type]
+        dest_dir, dest_file = self.hash[:2], f"{self.hash[2:]}.{file_ext}"
+        return Path(settings.SVAUDIO_REPO_CACHE_PATH) / dest_dir / dest_file
 
 
 class Location(m.Model):
     """A location where a SunVox resource might be found"""
 
+    def __str__(self):
+        return self.url
+
     url = m.URLField(
         max_length=2048,
         help_text="URL where resource can be publicly accessed.",
+        unique=True,
     )
     added_by = m.ForeignKey(
         User,
         on_delete=m.SET_NULL,
         related_name="locations_added",
         null=True,
+        blank=True,
         help_text="User who added the resource.",
     )
     added_at = m.DateTimeField(
@@ -56,6 +74,7 @@ class Location(m.Model):
         on_delete=m.SET_NULL,
         related_name="locations",
         null=True,
+        blank=True,
         help_text="Most recent fetch that succeeded.",
     )
     most_recent_file = m.ForeignKey(
@@ -63,8 +82,15 @@ class Location(m.Model):
         on_delete=m.SET_NULL,
         related_name="locations",
         null=True,
+        blank=True,
         help_text="File ",
     )
+
+    def save(self, *args, **kw) -> None:
+        is_new = not self.id
+        super().save(*args, **kw)
+        if is_new:
+            self.fetches.create()
 
 
 class Fetch(m.Model):
@@ -81,6 +107,7 @@ class Fetch(m.Model):
         on_delete=m.RESTRICT,
         related_name="fetches",
         null=True,
+        blank=True,
         help_text="File that was fetched, when finished, if successful.",
     )
     queued_at = m.DateTimeField(
@@ -89,16 +116,30 @@ class Fetch(m.Model):
     )
     started_at = m.DateTimeField(
         null=True,
+        blank=True,
         help_text="When the fetch started.",
     )
     finished_at = m.DateTimeField(
         null=True,
+        blank=True,
         help_text="When the fetch finished.",
     )
     success = m.BooleanField(
         null=True,
+        blank=True,
         help_text="Whether the fetch succeeded.",
     )
+
+    def save(self, *args, **kw) -> None:
+        should_fetch = not self.id
+        super().save(*args, **kw)
+        if should_fetch:
+            assert self.id
+            transaction.on_commit(self.start_fetch)
+
+    def start_fetch(self):
+        self.refresh_from_db()
+        start_fetch.delay(fetch_id=self.id)
 
 
 class Module(m.Model):
@@ -116,6 +157,9 @@ class Module(m.Model):
         help_text="Name of this module.",
     )
 
+    def __str__(self):
+        return self.name
+
 
 class Project(m.Model):
     """A SunVox project found within a File."""
@@ -131,3 +175,6 @@ class Project(m.Model):
         blank=True,
         help_text="Name of this project.",
     )
+
+    def __str__(self):
+        return self.name
