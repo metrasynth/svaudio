@@ -1,6 +1,6 @@
 from datetime import datetime
 from hashlib import sha256
-from os import fdopen, unlink
+from os import chmod, fdopen, unlink
 from pathlib import Path
 from shutil import move
 from tempfile import mkstemp
@@ -55,6 +55,7 @@ def start_fetch(fetch_id: int):
             dest_path: Path = file.filesystem_path()
             dest_path.parent.mkdir(parents=True, exist_ok=True)
             move(temp_name, dest_path)
+            chmod(dest_path, 0o644)
         else:
             unlink(temp_name)
         fetch.finished_at = datetime.now(tz=utc)
