@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+
+  <h1>Projects</h1>
+
+  <ul>
+    {% for project in object_list %}
+      <li><a href="{% url 'repo:project-detail' hash=project.file.hash %}">{{ project.name }}</a></li>
+    {% empty %}
+      <li>(No projects yet.)</li>
+    {% endfor %}
+  </ul>
+
+{% endblock content %}

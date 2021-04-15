@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Module: {{ object.name }}{% endblock %}
+
+{% block content %}
+  <h1>Module: {{ object.name }}</h1>
+
+  <h2>File details</h2>
+
+  <ul>
+    <li>Hash: {{ object.file.hash }}</li>
+    <li>Size: {{ object.file.size }}</li>
+  </ul>
+
+  <h2>Found at</h2>
+
+  <ul>
+    {% for location in object.locations %}
+      <li>{{ location.url }}</li>
+    {% empty %}
+      <li>(No locations on record.)</li>
+    {% endfor %}
+
+  </ul>
+
+{% endblock content %}

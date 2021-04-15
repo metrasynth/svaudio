@@ -1,4 +1,5 @@
 from pathlib import Path
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.db import models as m
@@ -45,6 +46,11 @@ class File(m.Model):
         dest_dir, dest_file = self.hash[:2], f"{self.hash[2:]}.{file_ext}"
         return Path(settings.SVAUDIO_REPO_CACHE_PATH) / dest_dir / dest_file
 
+    def media_url(self) -> str:
+        file_ext = {"M": "sunsynth", "P": "sunvox"}[self.file_type]
+        dest_dir, dest_file = self.hash[:2], f"{self.hash[2:]}.{file_ext}"
+        return urljoin(settings.SVAUDIO_REPO_CACHE_URL, f"{dest_dir}/{dest_file}")
+
 
 class Location(m.Model):
     """A location where a SunVox resource might be found"""
@@ -83,7 +89,7 @@ class Location(m.Model):
         related_name="locations",
         null=True,
         blank=True,
-        help_text="File ",
+        help_text="Most recent file downloaded.",
     )
 
     def save(self, *args, **kw) -> None:
