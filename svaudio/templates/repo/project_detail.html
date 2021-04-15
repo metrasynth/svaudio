@@ -17,7 +17,7 @@
   <h2>Found at</h2>
 
   <ul>
-    {% for location in object.locations %}
+    {% for location in object.file.locations.all %}
       <li>{{ location.url }}</li>
     {% empty %}
       <li>(No locations on record.)</li>
