@@ -17,6 +17,10 @@ class LocationsSubmitView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_message = _("URL successfully submitted")
     template_name = "repo/location_submit.html"
 
+    def form_valid(self, form):
+        form.instance.added_by = self.request.user
+        return super(LocationsSubmitView, self).form_valid(form)
+
     def get_success_url(self) -> str:
         return reverse("repo:location-submit")
 

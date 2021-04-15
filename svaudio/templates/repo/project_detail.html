@@ -18,7 +18,10 @@
 
   <ul>
     {% for location in object.file.locations.all %}
-      <li>{{ location.url }}</li>
+      <li>
+        <a href="{{ location.url }}" rel="nofollow">{{ location.url }}</a>
+        (added {{ location.added_at }}{% if location.added_by %} by <a href="{% url 'users:detail' location.added_by.username %}">{{ location.added_by }}</a>{% endif %})
+      </li>
     {% empty %}
       <li>(No locations on record.)</li>
     {% endfor %}
