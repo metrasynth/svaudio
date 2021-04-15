@@ -172,3 +172,8 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# repo
+# ------------------------------------------------------------------------------
+SVAUDIO_REPO_CACHE_PATH = env.str("SVAUDIO_REPO_CACHE_PATH")
+SVAUDIO_REPO_CACHE_URL = env.str("SVAUDIO_REPO_CACHE_URL")

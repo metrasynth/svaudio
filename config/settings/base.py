@@ -317,8 +317,3 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # graphene
 # ------------------------------------------------------------------------------
 GRAPHENE = {"SCHEMA": "svaudio.schema.schema"}
-
-# repo
-# ------------------------------------------------------------------------------
-SVAUDIO_REPO_CACHE_PATH = str(APPS_DIR / "media" / "repo" / "cache")
-SVAUDIO_REPO_CACHE_URL = f"{MEDIA_URL}repo/cache/"

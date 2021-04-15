@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import env
+from .base import APPS_DIR, MEDIA_URL, env
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -63,3 +63,8 @@ CELERY_TASK_ALWAYS_EAGER = False
 CELERY_TASK_EAGER_PROPAGATES = False
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# repo
+# ------------------------------------------------------------------------------
+SVAUDIO_REPO_CACHE_PATH = str(APPS_DIR / "media" / "repo" / "cache")
+SVAUDIO_REPO_CACHE_URL = f"{MEDIA_URL}repo/cache/"
