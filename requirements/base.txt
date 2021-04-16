@@ -1,3 +1,4 @@
+radiant-voices~=1.0.3
 pytz~=2021.1  # https://github.com/stub42/pytz
 python-slugify~=4.0.1  # https://github.com/un33k/python-slugify
 Pillow~=8.1.2  # https://github.com/python-pillow/Pillow
@@ -9,8 +10,6 @@ hiredis~=1.1.0  # https://github.com/redis/hiredis-py
 celery~=4.4.6  # pyup: < 5.0,!=4.4.7  # https://github.com/celery/celery
 django-celery-beat~=2.2.0  # https://github.com/celery/django-celery-beat
 uvicorn[standard]~=0.13.4  # https://github.com/encode/uvicorn
-radiant-voices~=1.0.2
-awesome-slugify~=1.6.5
 
 # Django
 # ------------------------------------------------------------------------------
