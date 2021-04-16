@@ -10,6 +10,7 @@ celery~=4.4.6  # pyup: < 5.0,!=4.4.7  # https://github.com/celery/celery
 django-celery-beat~=2.2.0  # https://github.com/celery/django-celery-beat
 uvicorn[standard]~=0.13.4  # https://github.com/encode/uvicorn
 radiant-voices~=1.0.2
+awesome-slugify~=1.6.5
 
 # Django
 # ------------------------------------------------------------------------------
