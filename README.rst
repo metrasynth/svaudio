@@ -1,7 +1,7 @@
 sunvox.audio
 ============
 
-Backend for sunvox.audio
+Backend for the `sunvox.audio <https://sunvox.audio/>`__ website.
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter
      :target: https://github.com/pydanny/cookiecutter-django/
@@ -10,8 +10,17 @@ Backend for sunvox.audio
      :target: https://github.com/ambv/black
      :alt: Black code style
 
-
 :License: MIT
+
+We encourage you to join in on the fun!
+
+That said, this is not intended to be used outside of being hosted at
+`sunvox.audio <https://sunvox.audio/>`__ or beta/staging sites maintained by its developers.
+
+If you fork this with the intention of making a new site, please be sure to change the name
+to something other than "sunvox.audio".
+
+Thanks!
 
 
 Settings
@@ -81,10 +90,15 @@ To run a celery worker:
     cd svaudio
     celery -A config.celery_app worker -l info
 
+By default the number of works is the number of CPU cores.
+You can limit it to a certain number like this:
+
+.. code-block:: bash
+
+    cd svaudio
+    celery -A config.celery_app worker -l info --concurrency 4
+
 Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
-
-
-
 
 Email Server
 ^^^^^^^^^^^^
@@ -114,6 +128,27 @@ Now you have your own mail server running locally, ready to receive whatever you
 .. _mailhog: https://github.com/mailhog/MailHog
 
 
+Primary author's dev setup
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Tools:
+
+- MacOS 11.2.3
+- Homebrew
+- Postgres
+- Redis
+- Python 3.9
+- virtualenv
+- PyCharm
+
+Terminal panes:
+
+- ``npm run dev``
+- ``./manage.py runserver_plus``
+- ``watchmedo auto-restart --directory=./ --pattern="*.py" --recursive -- celery -A config.celery_app worker -l info``
+- ``redis-server``
+- ``mailhog``
+- ``./manage.py shell_plus``
 
 Deployment
 ----------

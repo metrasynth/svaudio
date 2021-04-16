@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Submit a location{% endblock %}
+
+{% block content %}
+  <h1>Submit a location</h1>
+  <p>
+    Enter the URL of the location you'd like to submit to our module index.
+  </p>
+  <form class="form-horizontal" method="post" action="{% url 'repo:location-submit' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}

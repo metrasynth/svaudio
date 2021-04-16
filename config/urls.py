@@ -4,7 +4,9 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 from django.views import defaults as default_views
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from graphene_django.views import GraphQLView
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
@@ -18,6 +20,7 @@ urlpatterns = [
     path("users/", include("svaudio.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("", include("svaudio.apps.repo.urls", namespace="repo")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development
@@ -29,6 +32,8 @@ urlpatterns += [
     path("api/", include("config.api_router")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
+    # GraphQL base url
+    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ]
 
 if settings.DEBUG:

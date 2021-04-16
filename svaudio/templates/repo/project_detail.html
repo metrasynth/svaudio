@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Project: {{ object.name }}{% endblock %}
+
+{% block content %}
+  <h1>Project: {{ object.name }}</h1>
+
+  <h2>File details</h2>
+
+  <ul>
+    <li>Hash: {{ object.file.hash }}</li>
+    <li>Size: {{ object.file.size }}</li>
+    <li><a href="{{ object.file.media_url }}">Download cached copy</a></li>
+  </ul>
+
+  <h2>Found at</h2>
+
+  <ul>
+    {% for location in object.file.locations.all %}
+      <li>
+        <a href="{{ location.url }}" rel="nofollow">{{ location.url }}</a>
+        (added {{ location.added_at }}{% if location.added_by %} by <a href="{% url 'users:detail' location.added_by.username %}">{{ location.added_by }}</a>{% endif %})
+      </li>
+    {% empty %}
+      <li>(No locations on record.)</li>
+    {% endfor %}
+  </ul>
+
+{% endblock content %}

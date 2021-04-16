@@ -1,5 +1,5 @@
 from .base import *  # noqa
-from .base import env
+from .base import APPS_DIR, MEDIA_URL, env
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -58,8 +58,13 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 # Celery
 # ------------------------------------------------------------------------------
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-always-eager
-CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_ALWAYS_EAGER = False
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-eager-propagates
-CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_TASK_EAGER_PROPAGATES = False
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# repo
+# ------------------------------------------------------------------------------
+SVAUDIO_REPO_CACHE_PATH = str(APPS_DIR / "media" / "repo" / "cache")
+SVAUDIO_REPO_CACHE_URL = f"{MEDIA_URL}repo/cache/"
