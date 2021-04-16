@@ -13,7 +13,11 @@
   <ul>
     <li>Hash: {{ object.file.hash }}</li>
     <li>Size: {{ object.file.size }}</li>
-    <li><a href="{{ object.file.media_url }}">Download cached copy</a></li>
+    {% with object.file.media_url as media_url %}
+      {% if media_url %}
+        <li><a href="{{ media_url }}">Download cached copy</a></li>
+      {% endif %}
+    {% endwith %}
   </ul>
 
   <h2>Found at</h2>

@@ -1,10 +1,12 @@
 from pathlib import Path
+from typing import Optional
 from urllib.parse import urljoin
 
 from django.conf import settings
 from django.db import models as m
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
+from slugify import slugify
 
 from svaudio.apps.repo.tasks import start_fetch
 from svaudio.users.models import User
@@ -41,15 +43,41 @@ class File(m.Model):
         help_text="When the file was last accessed.",
     )
 
-    def filesystem_path(self) -> Path:
-        file_ext = {"M": "sunsynth", "P": "sunvox"}[self.file_type]
-        dest_dir, dest_file = self.hash[:2], f"{self.hash[2:]}.{file_ext}"
+    def file_ext(self) -> str:
+        return {"M": "sunsynth", "P": "sunvox"}[self.file_type]
+
+    def media_path(self) -> Path:
+        dest_dir, dest_file = self.hash[:2], f"{self.hash[2:]}.{self.file_ext()}"
         return Path(settings.SVAUDIO_REPO_CACHE_PATH) / dest_dir / dest_file
 
-    def media_url(self) -> str:
-        file_ext = {"M": "sunsynth", "P": "sunvox"}[self.file_type]
-        dest_dir, dest_file = self.hash[:2], f"{self.hash[2:]}.{file_ext}"
-        return urljoin(settings.SVAUDIO_REPO_CACHE_URL, f"{dest_dir}/{dest_file}")
+    def alias_path_fragment(self) -> Optional[str]:
+        if self.file_type == "M":
+            name = self.module.name
+        elif self.file_type == "P":
+            name = self.project.name
+        else:
+            return
+        basename = slugify(name) if name else self.hash
+        filename = f"{basename}.{self.file_ext()}"
+        dest_dir_1, dest_dir_2 = self.hash[:2], self.hash[2:]
+        return f"{dest_dir_1}/{dest_dir_2}/{filename}"
+
+    def alias_path(self) -> Optional[Path]:
+        fragment = self.alias_path_fragment()
+        return (Path(settings.SVAUDIO_REPO_CACHE_PATH) / fragment) if fragment else None
+
+    def media_url(self) -> Optional[str]:
+        fragment = self.alias_path_fragment()
+        return urljoin(settings.SVAUDIO_REPO_CACHE_URL, fragment) if fragment else None
+
+    def ensure_alias_symlink_exists(self):
+        alias_path = self.alias_path()
+        if not alias_path:
+            return
+        media_path = self.media_path()
+        if not alias_path.exists():
+            alias_path.parent.mkdir(parents=True, exist_ok=True)
+            alias_path.symlink_to(media_path)
 
 
 class Location(m.Model):

@@ -52,7 +52,7 @@ def start_fetch(fetch_id: int):
                 size=size,
                 cached_at=datetime.now(tz=utc),
             )
-            dest_path: Path = file.filesystem_path()
+            dest_path: Path = file.media_path()
             dest_path.parent.mkdir(parents=True, exist_ok=True)
             move(temp_name, dest_path)
             chmod(dest_path, 0o644)
@@ -79,3 +79,4 @@ def start_fetch(fetch_id: int):
                 sunvox_obj = read_sunvox_file(f)
                 assert isinstance(sunvox_obj, Synth)
                 m.Module.objects.get_or_create(file=file, name=sunvox_obj.module.name)
+        file.ensure_alias_symlink_exists()
