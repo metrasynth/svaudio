@@ -1,12 +1,76 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static compress %}
 
 {% block title %}Project: {{ object.name }}{% endblock %}
 
 {% block nav_active_projects %}active{% endblock %}
 
+{% block javascript %}
+  {{ block.super }}
+  <script src="{% static "js/sunvox/sunvox.js" %}"></script>
+  <script src="{% static "js/sunvox/sunvox_lib_loader.js" %}"></script>
+{% endblock %}
+
+{% block inline_javascript %}
+  <script type="application/javascript">
+    let loading = false
+    let loaded = false
+    svlib.then(function (Module) {
+      svlib = Module
+      sv_init(0, 44100, 2, 0)
+    })
+    function setStatus(status) {
+      document.getElementById("status").innerHTML = status
+      console.log(status)
+    }
+    function playProject() {
+      if (loading) {
+        return
+      }
+      if (loaded) {
+        setStatus("Playing")
+        sv_play_from_beginning(0)
+      }
+      if (!loaded) {
+        loading = true
+        setStatus("Loading...")
+        let req = new XMLHttpRequest();
+        req.open("GET", "{{ object.file.media_url }}", true);
+        req.responseType = "arraybuffer";
+        req.onload = function (e) {
+          if (this.status !== 200) {
+            return
+          }
+          let arrayBuffer = this.response
+          if (arrayBuffer) {
+            let byteArray = new Uint8Array(arrayBuffer)
+            sv_open_slot(0)
+            if (sv_load_from_memory(0, byteArray) === 0) {
+              setStatus("Playing")
+              loaded = true
+              loading = false
+              sv_play_from_beginning(0)
+            }
+          }
+        }
+        req.send(null)
+      }
+    }
+    function stopProject() {
+      setStatus("Stopped")
+      sv_stop(0)
+    }
+  </script>
+{% endblock %}
+
 {% block content %}
   <h1>Project: {{ object.name }}</h1>
+
+  <p>
+    <button onclick="playProject()">Play</button>
+    <button onclick="stopProject()">Stop</button>
+    <span id="status"></span>
+  </p>
 
   <h2>File details</h2>
 
