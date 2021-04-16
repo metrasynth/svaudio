@@ -32,7 +32,7 @@ jobs:
       # Getting only staged files can be tricky in case a new PR is opened
       # since the action is run on a branch in detached head state
       - name: Install and Run Pre-commit
-        uses: pre-commit/action@v2.0.0
+        uses: pre-commit/action@v2.0.2
 
   # With no caching at all the entire ci process takes 4m 30s to complete!
   pytest:
@@ -71,7 +71,7 @@ jobs:
           echo "::set-output name=dir::$(pip cache dir)"
 
       - name: Cache pip Project Dependencies
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           # Get the location of pip cache dir
           path: ${{ steps.pip-cache-location.outputs.dir }}
