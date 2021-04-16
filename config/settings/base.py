@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 
+import bleach
 import environ
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -63,6 +64,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
+    "django.contrib.flatpages",
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
@@ -138,6 +140,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
 ]
 
 # STATIC
@@ -317,3 +320,19 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # graphene
 # ------------------------------------------------------------------------------
 GRAPHENE = {"SCHEMA": "svaudio.schema.schema"}
+
+# django-markdownify
+INSTALLED_APPS += ["markdownify.apps.MarkdownifyConfig"]
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS
+        + [
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+        ],
+    }
+}
