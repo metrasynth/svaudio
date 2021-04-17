@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}User: {{ object.username }}{% endblock %}
+{% block title %}Profile: {% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -9,10 +9,8 @@
   <div class="row">
     <div class="col-sm-12">
 
-      <h2>{{ object.username }}</h2>
-      {% if object.name %}
-        <p>{{ object.name }}</p>
-      {% endif %}
+      <h2>{% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}</h2>
+
     </div>
   </div>
 
