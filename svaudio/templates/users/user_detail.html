@@ -1,17 +1,20 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static markdownify %}
 
-{% block title %}User: {{ object.username }}{% endblock %}
+{% block title %}Profile: {% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}{% endblock %}
 
 {% block content %}
 <div class="container">
 
   <div class="row">
     <div class="col-sm-12">
+      <h2>{% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}</h2>
 
-      <h2>{{ object.username }}</h2>
-      {% if object.name %}
-        <p>{{ object.name }}</p>
+      {% if object.bio %}
+        <h3>Bio</h3>
+        <div>
+          {{ object.bio | markdownify:"bio" }}
+        </div>
       {% endif %}
     </div>
   </div>
@@ -21,8 +24,8 @@
 <div class="row">
 
   <div class="col-sm-12">
-    <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+    <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">Edit Profile</a>
+    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">Change E-Mail</a>
     <!-- Your Stuff: Custom user template urls -->
   </div>
 

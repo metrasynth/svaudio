@@ -81,6 +81,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     # Your stuff: custom apps go here
     "svaudio.users.apps.UsersConfig",
+    "svaudio.apps.artists.apps.ArtistsConfig",
     "svaudio.apps.repo.apps.RepoConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -334,5 +335,8 @@ MARKDOWNIFY = {
             "h5",
             "h6",
         ],
-    }
+    },
+    "bio": {
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS,
+    },
 }
