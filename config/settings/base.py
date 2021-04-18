@@ -334,5 +334,8 @@ MARKDOWNIFY = {
             "h5",
             "h6",
         ],
-    }
+    },
+    "bio": {
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS,
+    },
 }

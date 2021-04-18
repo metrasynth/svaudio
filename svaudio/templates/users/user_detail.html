@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static markdownify %}
 
 {% block title %}Profile: {% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}{% endblock %}
 
@@ -8,9 +8,14 @@
 
   <div class="row">
     <div class="col-sm-12">
-
       <h2>{% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}</h2>
 
+      {% if object.bio %}
+        <h3>Bio</h3>
+        <div>
+          {{ object.bio | markdownify:"bio" }}
+        </div>
+      {% endif %}
     </div>
   </div>
 
