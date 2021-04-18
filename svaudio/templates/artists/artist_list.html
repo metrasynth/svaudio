@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Artists{% endblock %}
+
+{% block nav_active_artists %}active{% endblock %}
+
+{% block content %}
+  <h1>Artists</h1>
+  <ul>
+    {% for artist in object_list %}
+      <li><a href="{{ artist.get_absolute_url }}">{{ artist.display_name }}</a></li>
+    {% empty %}
+      <li>(No featured artists.)</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
