@@ -340,3 +340,7 @@ MARKDOWNIFY = {
         "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS,
     },
 }
+
+# django-taggit + local customizations
+INSTALLED_APPS += ["taggit.apps.TaggitAppConfig", "svaudio.tags.apps.TagsConfig"]
+TAGGIT_CASE_INSENSITIVE = True

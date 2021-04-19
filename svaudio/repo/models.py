@@ -7,8 +7,10 @@ from django.db import models as m
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
+from taggit.managers import TaggableManager
 
 from svaudio.repo.tasks import start_fetch
+from svaudio.tags.models import TaggedItem
 from svaudio.users.models import User
 
 
@@ -191,6 +193,8 @@ class Module(m.Model):
         help_text="Name of this module.",
     )
 
+    tags = TaggableManager(through=TaggedItem)
+
     def __str__(self):
         return self.name
 
@@ -209,6 +213,8 @@ class Project(m.Model):
         blank=True,
         help_text="Name of this project.",
     )
+
+    tags = TaggableManager(through=TaggedItem)
 
     def __str__(self):
         return self.name
