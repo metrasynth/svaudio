@@ -1,5 +1,6 @@
 from django.db import models as m
 from taggit.models import GenericTaggedItemBase, TagBase
+from vote.models import VoteModel
 
 from svaudio.users.models import User
 
@@ -8,7 +9,7 @@ class Tag(TagBase):
     pass
 
 
-class TaggedItem(GenericTaggedItemBase):
+class TaggedItem(VoteModel, GenericTaggedItemBase):
     tag = m.ForeignKey(
         Tag,
         on_delete=m.CASCADE,

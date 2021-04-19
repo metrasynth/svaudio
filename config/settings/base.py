@@ -344,3 +344,6 @@ MARKDOWNIFY = {
 # django-taggit + local customizations
 INSTALLED_APPS += ["taggit.apps.TaggitAppConfig", "svaudio.tags.apps.TagsConfig"]
 TAGGIT_CASE_INSENSITIVE = True
+
+# django-vote
+INSTALLED_APPS += ["vote.apps.VoteAppConfig"]
