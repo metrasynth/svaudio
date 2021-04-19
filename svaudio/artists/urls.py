@@ -1,6 +1,6 @@
 from django.urls import path
 
-from svaudio.apps.artists.views import artists_list_view
+from svaudio.artists.views import artists_list_view
 
 app_name = "artists"
 urlpatterns = [

@@ -8,7 +8,7 @@ from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
-from svaudio.apps.repo.tasks import start_fetch
+from svaudio.repo.tasks import start_fetch
 from svaudio.users.models import User
 
 

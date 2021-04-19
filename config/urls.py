@@ -18,8 +18,8 @@ urlpatterns = [
     path("users/", include("svaudio.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    path("", include("svaudio.apps.artists.urls", namespace="artists")),
-    path("", include("svaudio.apps.repo.urls", namespace="repo")),
+    path("", include("svaudio.artists.urls", namespace="artists")),
+    path("", include("svaudio.repo.urls", namespace="repo")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development

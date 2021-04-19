@@ -1,6 +1,6 @@
 from django.urls import path
 
-from svaudio.apps.repo.views import (
+from svaudio.repo.views import (
     locations_submit_view,
     modules_detail_view,
     modules_list_view,
