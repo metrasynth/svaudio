@@ -1,8 +1,10 @@
 from typing import Any, Dict
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Model
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView, DetailView, ListView
@@ -66,3 +68,43 @@ class ProjectsDetailView(GetByHashMixin, DetailView):
 
 
 projects_detail_view = ProjectsDetailView.as_view()
+
+
+def modules_add_tag_view(request, hash):
+    if not request.user.is_authenticated:
+        return redirect("repo:module-detail", hash=hash)
+    module = get_object_or_404(m.Module, file__hash=hash)
+    tags = request.POST["tags"]
+    tags = tags.split(",")
+    tags = [t.strip() for t in tags]
+    tags = [t[1:] if t[0:1] == "#" else t for t in tags]
+    tags = [t for t in tags if t]
+    for tag in tags:
+        module.tags.add(tag)
+    count = len(tags)
+    messages.add_message(
+        request,
+        messages.INFO,
+        f"Added {count} tag{'s' if count > 1 else ''}",
+    )
+    return redirect("repo:module-detail", hash=hash)
+
+
+def projects_add_tag_view(request, hash):
+    if not request.user.is_authenticated:
+        return redirect("repo:project-detail", hash=hash)
+    project = get_object_or_404(m.Project, file__hash=hash)
+    tags = request.POST["tags"]
+    tags = tags.split(",")
+    tags = [t.strip() for t in tags]
+    tags = [t[1:] if t[0:1] == "#" else t for t in tags]
+    tags = [t for t in tags if t]
+    for tag in tags:
+        project.tags.add(tag)
+    count = len(tags)
+    messages.add_message(
+        request,
+        messages.INFO,
+        f"Added {count} tag{'s' if count > 1 else ''}",
+    )
+    return redirect("repo:project-detail", hash=hash)
