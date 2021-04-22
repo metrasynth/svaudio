@@ -1,0 +1,49 @@
+{# params: object_list tag_items #}
+{% load humanize %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Project</th>
+      <th scope="col">Added</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for project in object_list %}
+      {% if tag_items %}
+        {% with project.content_object as project %}
+          <tr>
+            <td>
+              <span>
+                <a href="{% url 'repo:project-detail' project.file.hash %}">{% if project.name %}{{ project.name }}{% else %}(Untitled){% endif %}</a>
+              </span>
+              {% for tag in project.tags.all %}
+                <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
+              {% endfor %}
+            </td>
+            <td>
+              {{ project.file.cached_at | naturaltime }}
+            </td>
+          </tr>
+        {% endwith %}
+      {% else %}
+        <tr>
+          <td>
+            <span>
+              <a href="{% url 'repo:project-detail' project.file.hash %}">{% if project.name %}{{ project.name }}{% else %}(Untitled){% endif %}</a>
+            </span>
+            {% for tag in project.tags.all %}
+              <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
+            {% endfor %}
+          </td>
+          <td>
+            {{ project.file.cached_at | naturaltime }}
+          </td>
+        </tr>
+      {% endif %}
+    {% empty %}
+      <tr>
+        <td colspan="2">(No projects)</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

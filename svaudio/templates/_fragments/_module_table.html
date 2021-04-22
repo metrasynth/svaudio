@@ -1,0 +1,49 @@
+{# params: object_list tag_items #}
+{% load humanize %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Module</th>
+      <th scope="col">Added</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for module in object_list %}
+      {% if tag_items %}
+        {% with module.content_object as module %}
+          <tr>
+            <td>
+              <span>
+                <a href="{% url 'repo:module-detail' module.file.hash %}">{% if module.name %}{{ module.name }}{% else %}(Untitled){% endif %}</a>
+              </span>
+              {% for tag in module.tags.all %}
+                <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
+              {% endfor %}
+            </td>
+            <td>
+              {{ module.file.cached_at | naturaltime }}
+            </td>
+          </tr>
+        {% endwith %}
+      {% else %}
+        <tr>
+          <td>
+            <span>
+              <a href="{% url 'repo:module-detail' module.file.hash %}">{% if module.name %}{{ module.name }}{% else %}(Untitled){% endif %}</a>
+            </span>
+            {% for tag in module.tags.all %}
+              <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
+            {% endfor %}
+          </td>
+          <td>
+            {{ module.file.cached_at | naturaltime }}
+          </td>
+        </tr>
+      {% endif %}
+    {% empty %}
+      <tr>
+        <td colspan="2">(No modules)</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

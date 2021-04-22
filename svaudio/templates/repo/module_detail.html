@@ -8,6 +8,25 @@
 {% block content %}
   <h1>Module: {{ object.name }}</h1>
 
+  <div>
+    {% for tag in object.tags.all %}
+      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
+    {% endfor %}
+  </div>
+
+  {% if request.user.is_authenticated %}
+    <form method="post" action="{% url "repo:module-add-tag"  hash=object.file.hash %}" class="form-inline">
+      {% csrf_token %}
+      <div class="input-group mb-2 mr-sm-2 input-group-sm">
+        <div class="input-group-prepend">
+          <div class="input-group-text">#</div>
+        </div>
+        <input type="text" class="form-control" id="addTagsInput" name="tags" placeholder="tag1,tag2,...">
+      </div>
+      <button class="btn btn-primary mb-2 btn-sm" type="submit">Add Tag(s)</button>
+    </form>
+  {% endif %}
+
   <h2>File details</h2>
 
   <ul>
@@ -20,18 +39,6 @@
     {% endwith %}
   </ul>
 
-  <h2>Found at</h2>
-
-  <ul>
-    {% for location in object.file.locations.all %}
-      <li>
-        <a href="{{ location.url }}" rel="nofollow">{{ location.url }}</a>
-        (added {{ location.added_at }}{% if location.added_by %} by <a href="{% url 'users:detail' location.added_by.username %}">{{ location.added_by }}</a>{% endif %})
-      </li>
-    {% empty %}
-      <li>(No locations on record.)</li>
-    {% endfor %}
-
-  </ul>
+  {% include "repo/_found_at.html" with type="module" %}
 
 {% endblock content %}

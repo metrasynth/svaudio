@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class RepoConfig(AppConfig):
-    name = "svaudio.apps.repo"
+    name = "svaudio.repo"

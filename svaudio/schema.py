@@ -1,9 +1,9 @@
 import graphene
 
-import svaudio.apps.repo.schema
+import svaudio.repo.schema
 
 
-class Query(svaudio.apps.repo.schema.Query, graphene.ObjectType):
+class Query(svaudio.repo.schema.Query, graphene.ObjectType):
     pass
 
 

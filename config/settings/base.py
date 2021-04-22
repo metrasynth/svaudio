@@ -61,7 +61,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "django.contrib.humanize", # Handy template tags
+    "django.contrib.humanize",  # Handy template tags
     "django.contrib.admin",
     "django.forms",
     "django.contrib.flatpages",
@@ -81,8 +81,8 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     # Your stuff: custom apps go here
     "svaudio.users.apps.UsersConfig",
-    "svaudio.apps.artists.apps.ArtistsConfig",
-    "svaudio.apps.repo.apps.RepoConfig",
+    "svaudio.artists.apps.ArtistsConfig",
+    "svaudio.repo.apps.RepoConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -334,9 +334,17 @@ MARKDOWNIFY = {
             "h4",
             "h5",
             "h6",
+            "p",
         ],
     },
     "bio": {
-        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS,
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
     },
 }
+
+# django-taggit + local customizations
+INSTALLED_APPS += ["taggit.apps.TaggitAppConfig", "svaudio.tags.apps.TagsConfig"]
+TAGGIT_CASE_INSENSITIVE = True
+
+# django-vote
+INSTALLED_APPS += ["vote.apps.VoteAppConfig"]

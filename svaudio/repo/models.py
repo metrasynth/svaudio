@@ -7,8 +7,11 @@ from django.db import models as m
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
+from taggit.managers import TaggableManager
+from vote.models import VoteModel
 
-from svaudio.apps.repo.tasks import start_fetch
+from svaudio.repo.tasks import start_fetch
+from svaudio.tags.models import TaggedItem
 from svaudio.users.models import User
 
 
@@ -176,7 +179,7 @@ class Fetch(m.Model):
         start_fetch.delay(fetch_id=self.id)
 
 
-class Module(m.Model):
+class Module(VoteModel, m.Model):
     """A SunVox module found within a File."""
 
     file = m.OneToOneField(
@@ -191,11 +194,13 @@ class Module(m.Model):
         help_text="Name of this module.",
     )
 
+    tags = TaggableManager(through=TaggedItem)
+
     def __str__(self):
         return self.name
 
 
-class Project(m.Model):
+class Project(VoteModel, m.Model):
     """A SunVox project found within a File."""
 
     file = m.OneToOneField(
@@ -209,6 +214,8 @@ class Project(m.Model):
         blank=True,
         help_text="Name of this project.",
     )
+
+    tags = TaggableManager(through=TaggedItem)
 
     def __str__(self):
         return self.name
