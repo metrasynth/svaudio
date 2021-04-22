@@ -60,9 +60,10 @@ class File(m.Model):
             name = self.project.name
         else:
             return
-        basename = slugify(name) if name else self.hash
+        hash = self.hash
+        dest_dir_1, dest_dir_2 = hash[:2], hash[2:]
+        basename = f"{slugify(name)}-{hash[:8]}" if name else hash
         filename = f"{basename}.{self.file_ext()}"
-        dest_dir_1, dest_dir_2 = self.hash[:2], self.hash[2:]
         return f"{dest_dir_1}/{dest_dir_2}/{filename}"
 
     def alias_path(self) -> Optional[Path]:
