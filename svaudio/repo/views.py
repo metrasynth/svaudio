@@ -76,7 +76,7 @@ def module_add_tag_view(request, hash):
     module = get_object_or_404(m.Module, file__hash=hash)
     tags = request.POST["tags"]
     tags = tags.split(",")
-    tags = [t.strip() for t in tags]
+    tags = [t.strip().lower() for t in tags]
     tags = [t[1:] if t[0:1] == "#" else t for t in tags]
     tags = [t for t in tags if t]
     for tag in tags:
@@ -96,7 +96,7 @@ def project_add_tag_view(request, hash):
     project = get_object_or_404(m.Project, file__hash=hash)
     tags = request.POST["tags"]
     tags = tags.split(",")
-    tags = [t.strip() for t in tags]
+    tags = [t.strip().lower() for t in tags]
     tags = [t[1:] if t[0:1] == "#" else t for t in tags]
     tags = [t for t in tags if t]
     for tag in tags:
