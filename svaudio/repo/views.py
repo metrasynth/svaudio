@@ -27,7 +27,7 @@ class LocationsSubmitView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return reverse("repo:location-submit")
 
 
-locations_submit_view = LocationsSubmitView.as_view()
+location_submit_view = LocationsSubmitView.as_view()
 
 
 class ModulesListView(ListView):
@@ -35,7 +35,7 @@ class ModulesListView(ListView):
     model = m.Module
 
 
-modules_list_view = ModulesListView.as_view()
+module_list_view = ModulesListView.as_view()
 
 
 class GetByHashMixin:
@@ -51,7 +51,7 @@ class ModulesDetailView(GetByHashMixin, DetailView):
     model = m.Module
 
 
-modules_detail_view = ModulesDetailView.as_view()
+module_detail_view = ModulesDetailView.as_view()
 
 
 class ProjectsListView(ListView):
@@ -59,7 +59,7 @@ class ProjectsListView(ListView):
     model = m.Project
 
 
-projects_list_view = ProjectsListView.as_view()
+project_list_view = ProjectsListView.as_view()
 
 
 class ProjectsDetailView(GetByHashMixin, DetailView):
@@ -67,10 +67,10 @@ class ProjectsDetailView(GetByHashMixin, DetailView):
     model = m.Project
 
 
-projects_detail_view = ProjectsDetailView.as_view()
+project_detail_view = ProjectsDetailView.as_view()
 
 
-def modules_add_tag_view(request, hash):
+def module_add_tag_view(request, hash):
     if not request.user.is_authenticated:
         return redirect("repo:module-detail", hash=hash)
     module = get_object_or_404(m.Module, file__hash=hash)
@@ -90,7 +90,7 @@ def modules_add_tag_view(request, hash):
     return redirect("repo:module-detail", hash=hash)
 
 
-def projects_add_tag_view(request, hash):
+def project_add_tag_view(request, hash):
     if not request.user.is_authenticated:
         return redirect("repo:project-detail", hash=hash)
     project = get_object_or_404(m.Project, file__hash=hash)

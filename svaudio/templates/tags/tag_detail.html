@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tag: {{ object.name }}{% endblock %}
+
+{% block nav_active_tags %}active{% endblock %}
+
+{% block content %}
+  <h1>Tag: {{ object.name }}</h1>
+
+  {% with object.module_items as module_items %}
+    {% if module_items.count %}
+      <h2>Modules</h2>
+      <ul>
+        {% for module_item in module_items %}
+          {% with module_item.content_object as module %}
+            <li><a href="{% url 'repo:module-detail' module.file.hash %}">{{ module.name }}</a></li>
+          {% endwith %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  {% with object.project_items as project_items %}
+    {% if project_items.count %}
+      <h2>Projects</h2>
+      <ul>
+        {% for project_item in project_items %}
+          {% with project_item.content_object as project %}
+            <li><a href="{% url 'repo:project-detail' project.file.hash %}">{{ project.name }}</a></li>
+          {% endwith %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+{% endblock content %}

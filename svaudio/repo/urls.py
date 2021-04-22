@@ -1,50 +1,50 @@
 from django.urls import path
 
 from svaudio.repo.views import (
-    locations_submit_view,
-    modules_add_tag_view,
-    modules_detail_view,
-    modules_list_view,
-    projects_add_tag_view,
-    projects_detail_view,
-    projects_list_view,
+    location_submit_view,
+    module_add_tag_view,
+    module_detail_view,
+    module_list_view,
+    project_add_tag_view,
+    project_detail_view,
+    project_list_view,
 )
 
 app_name = "repo"
 urlpatterns = [
     path(
         "locations/submit/",
-        view=locations_submit_view,
+        view=location_submit_view,
         name="location-submit",
     ),
     path(
         "modules/",
-        view=modules_list_view,
+        view=module_list_view,
         name="module-list",
     ),
     path(
         "modules/<str:hash>/",
-        view=modules_detail_view,
+        view=module_detail_view,
         name="module-detail",
     ),
     path(
         "modules/<str:hash>/~add-tag/",
-        view=modules_add_tag_view,
+        view=module_add_tag_view,
         name="module-add-tag",
     ),
     path(
         "projects/",
-        view=projects_list_view,
+        view=project_list_view,
         name="project-list",
     ),
     path(
         "projects/<str:hash>/",
-        view=projects_detail_view,
+        view=project_detail_view,
         name="project-detail",
     ),
     path(
         "projects/<str:hash>/~add-tag/",
-        view=projects_add_tag_view,
+        view=project_add_tag_view,
         name="project-add-tag",
     ),
 ]

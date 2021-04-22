@@ -6,7 +6,11 @@ from svaudio.users.models import User
 
 
 class Tag(TagBase):
-    pass
+    def module_items(self):
+        return self.tags_taggeditem_items.filter(content_type__model="module")
+
+    def project_items(self):
+        return self.tags_taggeditem_items.filter(content_type__model="project")
 
 
 class TaggedItem(VoteModel, GenericTaggedItemBase):

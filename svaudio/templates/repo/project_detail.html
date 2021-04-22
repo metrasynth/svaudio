@@ -70,7 +70,7 @@
 
   <div>
     {% for tag in object.tags.all %}
-      <span class="badge badge-primary">#{{ tag.name }}</span>
+      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
     {% empty %}
       (No tags.)
     {% endfor %}
