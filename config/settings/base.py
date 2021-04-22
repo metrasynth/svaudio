@@ -348,3 +348,6 @@ TAGGIT_CASE_INSENSITIVE = True
 
 # django-vote
 INSTALLED_APPS += ["vote.apps.VoteAppConfig"]
+
+# actstream
+INSTALLED_APPS += ["actstream.apps.ActstreamConfig"]

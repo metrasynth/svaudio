@@ -7,7 +7,6 @@ class UsersConfig(AppConfig):
     verbose_name = _("Users")
 
     def ready(self):
-        try:
-            import svaudio.users.signals  # noqa F401
-        except ImportError:
-            pass
+        from actstream import registry
+
+        registry.register(self.get_model("User"))
