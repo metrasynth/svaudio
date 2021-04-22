@@ -25,6 +25,7 @@ urlpatterns = [
     # User management
     path("users/", include("svaudio.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    path("activity/", include("actstream.urls")),
     # Redirect to favicon
     path("favicon.ico", favicon),
     # Your stuff: custom urls includes go here
