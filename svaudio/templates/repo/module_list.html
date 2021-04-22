@@ -9,12 +9,6 @@
 
   <h1>Modules</h1>
 
-  <ul>
-    {% for module in object_list %}
-      <li><a href="{% url 'repo:module-detail' module.file.hash %}">{{ module.name }}</a></li>
-    {% empty %}
-      <li>(No modules yet.)</li>
-    {% endfor %}
-  </ul>
+  {% include "_fragments/_module_table.html" %}
 
 {% endblock content %}
