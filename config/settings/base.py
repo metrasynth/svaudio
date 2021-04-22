@@ -334,10 +334,11 @@ MARKDOWNIFY = {
             "h4",
             "h5",
             "h6",
+            "p",
         ],
     },
     "bio": {
-        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS,
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
     },
 }
 
