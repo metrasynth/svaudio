@@ -45,6 +45,8 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///svaudio")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
@@ -80,9 +82,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     # Your stuff: custom apps go here
-    "svaudio.users.apps.UsersConfig",
-    "svaudio.artists.apps.ArtistsConfig",
-    "svaudio.repo.apps.RepoConfig",
+    "svaudio.artists",
+    "svaudio.users",
+    "svaudio.repo",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -323,7 +325,7 @@ CORS_URLS_REGEX = r"^/api/.*$"
 GRAPHENE = {"SCHEMA": "svaudio.schema.schema"}
 
 # django-markdownify
-INSTALLED_APPS += ["markdownify.apps.MarkdownifyConfig"]
+INSTALLED_APPS += ["markdownify"]
 MARKDOWNIFY = {
     "default": {
         "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS
@@ -343,11 +345,11 @@ MARKDOWNIFY = {
 }
 
 # django-taggit + local customizations
-INSTALLED_APPS += ["taggit.apps.TaggitAppConfig", "svaudio.tags.apps.TagsConfig"]
+INSTALLED_APPS += ["taggit", "svaudio.tags"]
 TAGGIT_CASE_INSENSITIVE = True
 
 # django-vote
-INSTALLED_APPS += ["vote.apps.VoteAppConfig"]
+INSTALLED_APPS += ["vote"]
 
 # actstream
-INSTALLED_APPS += ["actstream.apps.ActstreamConfig"]
+INSTALLED_APPS += ["actstream"]
