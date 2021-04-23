@@ -18,6 +18,9 @@ from svaudio.users.models import User
 class File(m.Model):
     """A file that has been retrieved and minimally processed."""
 
+    class Meta:
+        ordering = ["-cached_at"]
+
     class FileType(m.TextChoices):
         MODULE = "M", _("Module")
         PROJECT = "P", _("Project")

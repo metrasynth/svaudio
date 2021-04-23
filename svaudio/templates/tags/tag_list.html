@@ -9,12 +9,12 @@
 
   <h1>Tags</h1>
 
-  <ul>
+  <p>
     {% for tag in object_list %}
-      <li><a href="{% url 'tags:tag-detail' slug=tag.slug %}">{{ tag.name }}</a></li>
+      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">{{ tag.name }}</span></a>
     {% empty %}
-      <li>(No tags yet.)</li>
+      (No tags yet.)
     {% endfor %}
-  </ul>
+  </p>
 
 {% endblock content %}
