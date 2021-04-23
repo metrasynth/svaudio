@@ -1,9 +1,46 @@
 {% extends "base.html" %}
-{% load static compress %}
+{% load claims static compress %}
 
 {% block title %}Project: {{ object.name }}{% endblock %}
 
 {% block nav_active_projects %}active{% endblock %}
+
+{% block content %}
+  <h1>Project: {{ object.name }}</h1>
+
+  {% approved_claims_for_object object as claims %}
+
+  {% include "repo/_byline.html" %}
+
+  <p>
+    {% include "_fragments/_tag_links.html" with modelname="project" object=object %}
+  </p>
+
+  <div>
+    {% include "repo/_add_tag_inline_form.html" with add_tag_url_name="repo:project-add-tag" %}
+  </div>
+
+  <hr>
+
+  <h2>SunVox web player</h2>
+
+  <p>
+    <button onclick="playProject()">Play</button>
+    <button onclick="stopProject()">Stop</button>
+    <span id="status"></span>
+  </p>
+
+  <hr>
+
+  {% include "repo/_file_details.html" %}
+
+  <hr>
+
+  {% include "repo/_found_at.html" with type="project" %}
+
+  {% include "repo/_ownership.html" with type="project" %}
+
+{% endblock content %}
 
 {% block javascript %}
   {{ block.super }}
@@ -62,47 +99,3 @@
     }
   </script>
 {% endblock %}
-
-{% block content %}
-  <h1>Project: {{ object.name }}</h1>
-
-  <div>
-    {% include "_fragments/_tag_links.html" with modelname="project" object=object %}
-  </div>
-
-  {% if request.user.is_authenticated %}
-    <form method="post" action="{% url "repo:project-add-tag" hash=object.file.hash %}" class="form-inline">
-      {% csrf_token %}
-      <div class="input-group mb-2 mr-sm-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text">#</div>
-        </div>
-        <input type="text" class="form-control" id="addTagsInput" name="tags" placeholder="tag1,tag2,...">
-      </div>
-      <button class="btn btn-primary mb-2" type="submit">Add Tag(s)</button>
-    </form>
-  {% endif %}
-
-  <h2>SunVox web player</h2>
-
-  <p>
-    <button onclick="playProject()">Play</button>
-    <button onclick="stopProject()">Stop</button>
-    <span id="status"></span>
-  </p>
-
-  <h2>File details</h2>
-
-  <ul>
-    <li>Hash: {{ object.file.hash }}</li>
-    <li>Size: {{ object.file.size }}</li>
-    {% with object.file.media_url as media_url %}
-      {% if media_url %}
-        <li><a href="{{ media_url }}">Download cached copy</a></li>
-      {% endif %}
-    {% endwith %}
-  </ul>
-
-  {% include "repo/_found_at.html" with type="project" %}
-
-{% endblock content %}

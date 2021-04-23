@@ -1,0 +1,13 @@
+{# params: request,add_tag_url_name,object #}
+{% if request.user.is_authenticated %}
+  <form method="post" action="{% url add_tag_url_name hash=object.file.hash %}" class="form-inline">
+    {% csrf_token %}
+    <div class="input-group mb-2 mr-sm-2 input-group-sm">
+      <div class="input-group-prepend">
+        <div class="input-group-text">#</div>
+      </div>
+      <input type="text" class="form-control" id="addTagsInput" name="tags" placeholder="tag1,tag2,...">
+    </div>
+    <button class="btn btn-primary mb-2 btn-sm" type="submit">Add Tag(s)</button>
+  </form>
+{% endif %}

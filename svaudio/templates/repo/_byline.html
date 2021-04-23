@@ -1,0 +1,4 @@
+{# params: claims #}
+{% if claims %}
+  {% for claim in claims %}{% if forloop.first %}By{% else %},{% endif %} <a href="{% url 'users:detail' username=claim.user.username %}">{{ claim.user.display_name }}</a>{% endfor %}
+{% endif %}

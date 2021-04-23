@@ -1,0 +1,49 @@
+{# params: claims #}
+{% load claims %}
+{% if request.user.is_authenticated %}
+  <hr>
+
+  {% claim_for_object_by_user object request.user as claim %}
+
+  {% if claim %}
+    {% if not claim.reviewed_at %}
+      <p>
+        {% if claims.count > 1 %}
+          You are a co-owner of this {{ type }} (pending review).
+        {% else %}
+          You are the owner of this {{ type }} (pending review).
+        {% endif %}
+      </p>
+    {% elif claim.approved %}
+      <p>
+        {% if claims.count > 1 %}
+          You are a co-owner of this {{ type }}.
+        {% else %}
+          You are the owner of this {{ type }}.
+        {% endif %}
+      </p>
+    {% else %}
+      <p>
+        Note: Your request to claim ownership of this {{ type }} was rejected.
+      </p>
+    {% endif %}
+  {% else %}
+    {% if claims.count == 1 %}
+      <p>There is {{ claims.count }} owner of this {{ type }}.</p>
+    {% else %}
+      <p>There are {{ claims.count }} owners of this {{ type }}.</p>
+    {% endif %}
+    {% if claims.count %}
+      <p>
+        If you are a co-author or co-collaborator for this {{ type }},
+        you can also <a href="#">claim ownership</a>.
+      </p>
+    {% else %}
+      <p>
+        If you are an author or collaborator for this {{ type }},
+        you can <a href="#">claim ownership</a>.
+      </p>
+    {% endif %}
+  {% endif %}
+
+{% endif %}
