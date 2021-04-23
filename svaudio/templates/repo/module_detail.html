@@ -9,9 +9,7 @@
   <h1>Module: {{ object.name }}</h1>
 
   <div>
-    {% for tag in object.tags.all %}
-      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
-    {% endfor %}
+    {% include "_fragments/_tag_links.html" with modelname="module" object=object %}
   </div>
 
   {% if request.user.is_authenticated %}

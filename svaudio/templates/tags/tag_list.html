@@ -11,7 +11,7 @@
 
   <p>
     {% for tag in object_list %}
-      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">{{ tag.name }}</span></a>
+      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
     {% empty %}
       (No tags yet.)
     {% endfor %}

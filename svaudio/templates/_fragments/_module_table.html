@@ -1,5 +1,4 @@
 {# params: object_list tag_items #}
-{% load humanize %}
 <table class="table">
   <thead>
     <tr>
@@ -11,34 +10,10 @@
     {% for module in object_list %}
       {% if tag_items %}
         {% with module.content_object as module %}
-          <tr>
-            <td>
-              <span>
-                <a href="{% url 'repo:module-detail' module.file.hash %}">{% if module.name %}{{ module.name }}{% else %}(Untitled){% endif %}</a>
-              </span>
-              {% for tag in module.tags.all %}
-                <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
-              {% endfor %}
-            </td>
-            <td>
-              {{ module.file.cached_at | naturaltime }}
-            </td>
-          </tr>
+          {% include "_fragments/_module_table_row.html" %}
         {% endwith %}
       {% else %}
-        <tr>
-          <td>
-            <span>
-              <a href="{% url 'repo:module-detail' module.file.hash %}">{% if module.name %}{{ module.name }}{% else %}(Untitled){% endif %}</a>
-            </span>
-            {% for tag in module.tags.all %}
-              <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
-            {% endfor %}
-          </td>
-          <td>
-            {{ module.file.cached_at | naturaltime }}
-          </td>
-        </tr>
+        {% include "_fragments/_module_table_row.html" %}
       {% endif %}
     {% empty %}
       <tr>

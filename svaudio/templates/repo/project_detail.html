@@ -66,14 +66,8 @@
 {% block content %}
   <h1>Project: {{ object.name }}</h1>
 
-  <h2>Tags</h2>
-
   <div>
-    {% for tag in object.tags.all %}
-      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
-    {% empty %}
-      (No tags.)
-    {% endfor %}
+    {% include "_fragments/_tag_links.html" with modelname="project" object=object %}
   </div>
 
   {% if request.user.is_authenticated %}

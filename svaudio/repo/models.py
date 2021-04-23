@@ -186,6 +186,9 @@ class Fetch(m.Model):
 class Module(VoteModel, m.Model):
     """A SunVox module found within a File."""
 
+    class Meta:
+        ordering = ["-file__cached_at"]
+
     file = m.OneToOneField(
         "File",
         on_delete=m.CASCADE,
@@ -206,6 +209,9 @@ class Module(VoteModel, m.Model):
 
 class Project(VoteModel, m.Model):
     """A SunVox project found within a File."""
+
+    class Meta:
+        ordering = ["-file__cached_at"]
 
     file = m.OneToOneField(
         "File",

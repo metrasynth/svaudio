@@ -1,0 +1,17 @@
+{# params: module #}
+{% load cache humanize %}
+{% cache None module-table-row module.pk %}
+  {% with module.file as file %}
+    <tr>
+      <td>
+        <span>
+          <a href="{% url 'repo:module-detail' file.hash %}">{% if module.name %}{{ module.name }}{% else %}(Untitled){% endif %}</a>
+        </span>
+        {% include "_fragments/_tag_links.html" with object=module modelname="module" %}
+      </td>
+      <td>
+        {{ file.cached_at | naturaltime }}
+      </td>
+    </tr>
+  {% endwith %}
+{% endcache %}
