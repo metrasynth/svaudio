@@ -40,10 +40,10 @@ class Claim(m.Model):
     )
 
     @classmethod
-    def claims_for(cls, instance):
-        model = type(instance)._meta.concrete_model
+    def claims_for(cls, obj):
+        model = type(obj)._meta.concrete_model
         return cls.objects.filter(
             content_type__app_label=model._meta.app_label,
             content_type__model=model._meta.model_name,
-            object_id=instance.pk,
+            object_id=obj.pk,
         )
