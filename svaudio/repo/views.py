@@ -106,8 +106,8 @@ def _add_tag_view(modelname, request, hash):
     count = len(new_tags)
     messages.add_message(
         request,
-        messages.INFO,
-        f"Added {count} new tag{'s' if count != 1 else ''}",
+        messages.SUCCESS,
+        f"You added {count} new tag{'s' if count != 1 else ''}. Thanks!",
     )
     cache.delete(make_template_fragment_key("object-tag-list", [modelname, obj.pk]))
     cache.delete(make_template_fragment_key(f"{modelname}-table-row", [obj.pk]))

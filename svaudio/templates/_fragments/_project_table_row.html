@@ -1,17 +1,15 @@
 {# params: project #}
 {% load cache humanize %}
 {% cache None project-table-row project.pk %}
-  {% with project.file as file %}
-    <tr>
-      <td>
-        <span>
-          <a href="{% url 'repo:project-detail' file.hash %}">{% if project.name %}{{ project.name }}{% else %}(Untitled){% endif %}</a>
-        </span>
-        {% include "_fragments/_tag_links.html" with object=project modelname="project" %}
-      </td>
-      <td>
-        {{ file.cached_at | naturaltime }}
-      </td>
-    </tr>
-  {% endwith %}
+  <tr>
+    <td>
+      <span>
+        <a href="{{ project.get_absolute_url }}">{% if project.name %}{{ project.name }}{% else %}(Untitled){% endif %}</a>
+      </span>
+      {% include "_fragments/_tag_links.html" with object=project modelname="project" %}
+    </td>
+    <td>
+      {{ project.file.cached_at | naturaltime }}
+    </td>
+  </tr>
 {% endcache %}

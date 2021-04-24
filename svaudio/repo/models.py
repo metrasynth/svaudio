@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 from django.conf import settings
 from django.db import models as m
 from django.db import transaction
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 from taggit.managers import TaggableManager
@@ -204,7 +205,10 @@ class Module(VoteModel, m.Model):
     tags = TaggableManager(through=TaggedItem)
 
     def __str__(self):
-        return self.name
+        return self.name.strip() or "(Untitled)"
+
+    def get_absolute_url(self):
+        return reverse("repo:module-detail", kwargs={"hash": self.file.hash})
 
 
 class Project(VoteModel, m.Model):
@@ -228,4 +232,7 @@ class Project(VoteModel, m.Model):
     tags = TaggableManager(through=TaggedItem)
 
     def __str__(self):
-        return self.name
+        return self.name.strip() or "(Untitled)"
+
+    def get_absolute_url(self):
+        return reverse("repo:project-detail", kwargs={"hash": self.file.hash})

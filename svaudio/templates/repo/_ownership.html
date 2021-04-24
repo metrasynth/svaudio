@@ -1,4 +1,4 @@
-{# params: claims #}
+{# params: claims,object,request #}
 {% load claims %}
 {% if request.user.is_authenticated %}
   <hr>
@@ -33,17 +33,20 @@
     {% else %}
       <p>There are {{ claims.count }} owners of this {{ type }}.</p>
     {% endif %}
-    {% if claims.count %}
-      <p>
-        If you are a co-author or co-collaborator for this {{ type }},
-        you can also <a href="#">claim ownership</a>.
-      </p>
-    {% else %}
-      <p>
-        If you are an author or collaborator for this {{ type }},
-        you can <a href="#">claim ownership</a>.
-      </p>
-    {% endif %}
+    {% with object|content_type as ctype %}
+      {% url "claims:object-claim-list" content_type_id=ctype.id object_id=object.id as claims_url %}
+      {% if claims.count %}
+        <p>
+          If you are a co-author or co-collaborator for this {{ type }},
+          you can also <a href="{{ claims_url }}">claim ownership</a>.
+        </p>
+      {% else %}
+        <p>
+          If you are an author or collaborator for this {{ type }},
+          you can <a href="{{ claims_url }}">claim ownership</a>.
+        </p>
+      {% endif %}
+    {% endwith %}
   {% endif %}
 
 {% endif %}

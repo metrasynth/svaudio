@@ -32,6 +32,7 @@ urlpatterns = [
     path("", include("svaudio.artists.urls", namespace="artists")),
     path("", include("svaudio.repo.urls", namespace="repo")),
     path("", include("svaudio.tags.urls", namespace="tags")),
+    path("claims/", include("svaudio.claims.urls", namespace="claims")),
     # Flatpages go last
     path("", flatpages_views.flatpage, {"url": "/"}, name="home"),
     path("about/", flatpages_views.flatpage, {"url": "/about/"}, name="about"),
