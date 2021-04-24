@@ -6,7 +6,7 @@
 {% block nav_active_tags %}active{% endblock %}
 
 {% block content %}
-  <h1>Tag: {{ object.name }}</h1>
+  <h1>#{{ object.name }}</h1>
 
   {% with object.module_items as module_items %}
     {% if module_items.count %}

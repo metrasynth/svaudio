@@ -6,6 +6,9 @@ from svaudio.users.models import User
 
 
 class Tag(TagBase):
+    class Meta:
+        ordering = ["name"]
+
     def module_items(self):
         return self.tags_taggeditem_items.filter(content_type__model="module")
 

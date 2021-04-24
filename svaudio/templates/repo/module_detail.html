@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load claims static %}
 
 {% block title %}Module: {{ object.name }}{% endblock %}
 
@@ -8,37 +8,26 @@
 {% block content %}
   <h1>Module: {{ object.name }}</h1>
 
+  {% approved_claims_for_object object as claims %}
+
+  {% include "repo/_byline.html" %}
+
+  <p>
+    {% include "_fragments/_tag_links.html" with modelname="module" object=object %}
+  </p>
+
   <div>
-    {% for tag in object.tags.all %}
-      <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
-    {% endfor %}
+    {% include "repo/_add_tag_inline_form.html" with add_tag_url_name="repo:module-add-tag" %}
   </div>
 
-  {% if request.user.is_authenticated %}
-    <form method="post" action="{% url "repo:module-add-tag"  hash=object.file.hash %}" class="form-inline">
-      {% csrf_token %}
-      <div class="input-group mb-2 mr-sm-2 input-group-sm">
-        <div class="input-group-prepend">
-          <div class="input-group-text">#</div>
-        </div>
-        <input type="text" class="form-control" id="addTagsInput" name="tags" placeholder="tag1,tag2,...">
-      </div>
-      <button class="btn btn-primary mb-2 btn-sm" type="submit">Add Tag(s)</button>
-    </form>
-  {% endif %}
+  <hr>
 
-  <h2>File details</h2>
+  {% include "repo/_file_details.html" %}
 
-  <ul>
-    <li>Hash: {{ object.file.hash }}</li>
-    <li>Size: {{ object.file.size }}</li>
-    {% with object.file.media_url as media_url %}
-      {% if media_url %}
-        <li><a href="{{ media_url }}">Download cached copy</a></li>
-      {% endif %}
-    {% endwith %}
-  </ul>
+  <hr>
 
   {% include "repo/_found_at.html" with type="module" %}
+
+  {% include "repo/_ownership.html" with type="module" %}
 
 {% endblock content %}

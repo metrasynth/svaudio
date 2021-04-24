@@ -4,6 +4,8 @@ from actstream import action
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db.models import Model
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -74,56 +76,39 @@ project_detail_view = ProjectsDetailView.as_view()
 
 
 def module_add_tag_view(request, hash):
-    if not request.user.is_authenticated:
-        return redirect("repo:module-detail", hash=hash)
-    module = get_object_or_404(m.Module, file__hash=hash)
-    tags = request.POST["tags"]
-    tags = tags.split(",")
-    tags = [t.strip().lower() for t in tags]
-    tags = [t[1:] if t[0:1] == "#" else t for t in tags]
-    tags = {t for t in tags if t}
-    existing_tags = {t.name for t in module.tags.all()}
-    new_tags = tags - existing_tags
-    for new_tag in new_tags:
-        module.tags.add(new_tag)
-        action.send(
-            request.user,
-            verb=Verb.ADDED_TAG,
-            action_object=Tag.objects.get(name=new_tag),
-            target=module,
-        )
-    count = len(new_tags)
-    messages.add_message(
-        request,
-        messages.INFO,
-        f"Added {count} new tag{'s' if count != 1 else ''}",
-    )
-    return redirect("repo:module-detail", hash=hash)
+    return _add_tag_view("module", request, hash)
 
 
 def project_add_tag_view(request, hash):
+    return _add_tag_view("project", request, hash)
+
+
+def _add_tag_view(modelname, request, hash):
     if not request.user.is_authenticated:
-        return redirect("repo:project-detail", hash=hash)
-    project = get_object_or_404(m.Project, file__hash=hash)
+        return redirect(f"repo:{modelname}-detail", hash=hash)
+    model = {"module": m.Module, "project": m.Project}[modelname]
+    obj = get_object_or_404(model, file__hash=hash)
     tags = request.POST["tags"]
     tags = tags.split(",")
     tags = [t.strip().lower() for t in tags]
     tags = [t[1:] if t[0:1] == "#" else t for t in tags]
     tags = {t for t in tags if t}
-    existing_tags = {t.name for t in project.tags.all()}
+    existing_tags = {t.name for t in obj.tags.all()}
     new_tags = tags - existing_tags
     for new_tag in new_tags:
-        project.tags.add(new_tag)
+        obj.tags.add(new_tag)
         action.send(
             request.user,
             verb=Verb.ADDED_TAG,
             action_object=Tag.objects.get(name=new_tag),
-            target=project,
+            target=obj,
         )
     count = len(new_tags)
     messages.add_message(
         request,
-        messages.INFO,
-        f"Added {count} new tag{'s' if count != 1 else ''}",
+        messages.SUCCESS,
+        f"You added {count} new tag{'s' if count != 1 else ''}. Thanks!",
     )
-    return redirect("repo:project-detail", hash=hash)
+    cache.delete(make_template_fragment_key("object-tag-list", [modelname, obj.pk]))
+    cache.delete(make_template_fragment_key(f"{modelname}-table-row", [obj.pk]))
+    return redirect(f"repo:{modelname}-detail", hash=hash)

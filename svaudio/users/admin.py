@@ -16,11 +16,13 @@ class UserAdmin(auth_admin.UserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (_("Personal info"), {"fields": ("name", "email")}),
+        (_("Artist Profile"), {"fields": ("feature_as_artist", "bio")}),
         (
             _("Permissions"),
             {
                 "fields": (
                     "is_active",
+                    "is_moderator",
                     "is_staff",
                     "is_superuser",
                     "groups",

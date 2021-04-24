@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Claims for: {{ target }}{% endblock %}
+
+{% block content %}
+  <h1>Claims for: {{ target }}</h1>
+
+  {% if not object_list.count %}
+    <p>
+      No one has claimed ownership of this resource.
+    </p>
+    {% if user_claim %}
+      <p>
+        You've submitted a claim request, now awaiting review by a site moderator.
+      </p>
+    {% else %}
+      <p>
+        If you are the rightful owner, claim ownership below
+        to gain more control over how this resource is presented.
+      </p>
+    {% endif %}
+  {% else %}
+    <p>The following user(s) own this resource:</p>
+    <ul>
+      {% for claim in object_list %}
+        <li>
+          <a href="{% url 'users:detail' username=claim.user.username %}">{{ claim.user.display_name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if user_claim %}
+      <p>
+        You've submitted a claim request, now awaiting review by a co-owner.
+      </p>
+    {% else %}
+      <p>
+        If you are a rightful co-owner, you can claim co-ownership below
+        and gain more control over how this resource is presented.
+      </p>
+    {% endif %}
+  {% endif %}
+
+  {% if not user_claim %}
+    <hr>
+
+    <p>To claim ownership, please acknowledge the following:</p>
+
+    <form action="{% url "claims:object-claim-create" content_type_id=content_type_id object_id=object_id %}" method="post">
+      {% csrf_token %}
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" name="ownerAck" value="yes" id="ownerAckInput">
+        <label for="ownerAckInput" class="form-check-label">I am a rightful owner or co-owner of this resource.</label>
+      </div>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" name="reviewAck" value="yes" id="reviewAckInput">
+        <label for="reviewAckInput" class="form-check-label">I understand this request will be reviewed by {% if not object_list.count %}a site moderator{% else %}an existing owner{% endif %}.</label>
+      </div>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" name="abuseAck" value="yes" id="abuseAckInput">
+        <label for="abuseAckInput" class="form-check-label">I understand that wrongful claims will lead to loss of user account privileges.</label>
+      </div>
+      <button type="submit" class="btn btn-primary">Claim Ownership</button>
+    </form>
+  {% endif %}
+
+{% endblock %}

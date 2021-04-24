@@ -1,0 +1,15 @@
+{# params: module #}
+{% load cache humanize %}
+{% cache None module-table-row module.pk %}
+  <tr>
+    <td>
+      <span>
+        <a href="{{ module.get_absolute_url }}">{% if module.name %}{{ module.name }}{% else %}(Untitled){% endif %}</a>
+      </span>
+      {% include "_fragments/_tag_links.html" with object=module modelname="module" %}
+    </td>
+    <td>
+      {{ module.file.cached_at | naturaltime }}
+    </td>
+  </tr>
+{% endcache %}

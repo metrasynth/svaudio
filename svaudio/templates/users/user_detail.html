@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static markdownify %}
+{% load claims static markdownify %}
 
 {% block title %}Profile: {% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}{% endblock %}
 
@@ -16,6 +16,20 @@
           {{ object.bio | markdownify:"bio" }}
         </div>
       {% endif %}
+
+      {% all_approved_claims_for_user request.user as claims %}
+      {% if claims.count %}
+        <h3>Resources</h3>
+
+        <ul>
+          {% for claim in claims %}
+            {% with claim.content_object as obj %}
+              <li><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></li>
+            {% endwith %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+
     </div>
   </div>
 
