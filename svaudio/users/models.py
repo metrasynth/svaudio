@@ -14,6 +14,7 @@ class User(AbstractUser):
         max_length=255,
         help_text=_("Optional, to show a different name than your username."),
     )
+    is_moderator = m.BooleanField(default=False)
     first_name = None  # type: ignore
     last_name = None  # type: ignore
     feature_as_artist = m.BooleanField(
