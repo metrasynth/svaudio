@@ -27,3 +27,10 @@ def claim_for_object_by_user(obj: Claimable, user: User) -> Optional[Claim]:
 def content_type(obj):
     if obj:
         return ContentType.objects.get_for_model(obj)
+
+
+@register.simple_tag
+def all_approved_claims_for_user(user: User):
+    if user.is_anonymous:
+        return []
+    return Claim.objects.filter(user=user, approved=True)
