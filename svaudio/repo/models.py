@@ -184,11 +184,25 @@ class Fetch(m.Model):
         start_fetch.delay(fetch_id=self.id)
 
 
-class Module(VoteModel, m.Model):
-    """A SunVox module found within a File."""
+class Resource(m.Model):
+    name = m.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Name of this resource.",
+    )
+
+    tags = TaggableManager(through=TaggedItem)
 
     class Meta:
+        abstract = True
         ordering = ["-file__cached_at"]
+
+    def __str__(self):
+        return self.name.strip() or "(Untitled)"
+
+
+class Module(VoteModel, Resource):
+    """A SunVox module found within a File."""
 
     file = m.OneToOneField(
         "File",
@@ -196,26 +210,13 @@ class Module(VoteModel, m.Model):
         related_name="module",
         help_text="File containing the content of this module.",
     )
-    name = m.CharField(
-        max_length=500,
-        blank=True,
-        help_text="Name of this module.",
-    )
-
-    tags = TaggableManager(through=TaggedItem)
-
-    def __str__(self):
-        return self.name.strip() or "(Untitled)"
 
     def get_absolute_url(self):
         return reverse("repo:module-detail", kwargs={"hash": self.file.hash})
 
 
-class Project(VoteModel, m.Model):
+class Project(VoteModel, Resource):
     """A SunVox project found within a File."""
-
-    class Meta:
-        ordering = ["-file__cached_at"]
 
     file = m.OneToOneField(
         "File",
@@ -223,16 +224,6 @@ class Project(VoteModel, m.Model):
         related_name="project",
         help_text="File containing the content of this project.",
     )
-    name = m.CharField(
-        max_length=500,
-        blank=True,
-        help_text="Name of this project.",
-    )
-
-    tags = TaggableManager(through=TaggedItem)
-
-    def __str__(self):
-        return self.name.strip() or "(Untitled)"
 
     def get_absolute_url(self):
         return reverse("repo:project-detail", kwargs={"hash": self.file.hash})
