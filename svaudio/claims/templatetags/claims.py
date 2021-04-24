@@ -20,7 +20,7 @@ def approved_claims_for_object(obj: Claimable) -> Iterable[Claim]:
 @register.simple_tag
 def claim_for_object_by_user(obj: Claimable, user: User) -> Optional[Claim]:
     if not user.is_anonymous:
-        return Claim.claims_for(obj).filter(user=user)
+        return Claim.claims_for(obj).filter(user=user).first()
 
 
 @register.filter

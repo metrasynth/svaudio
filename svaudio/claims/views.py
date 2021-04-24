@@ -1,12 +1,14 @@
+from datetime import datetime, timezone
 from typing import Any, Dict
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView
 
+from ..mixins import ModeratorRequiredMixin
 from ..repo.models import Module, Project
 from .models import Claim
 
@@ -26,6 +28,43 @@ def _get_target_object(content_type_id, object_id):
     if not obj:
         raise Http404()
     return obj
+
+
+class ModerateView(ModeratorRequiredMixin, ListView):
+
+    template_name = "claims/moderate.html"
+    model = Claim
+
+    def get_queryset(self):
+        return Claim.objects.filter(reviewed_at=None)
+
+
+moderate_view = ModerateView.as_view()
+
+
+def moderate_action_view(request):
+    u = request.user
+    if not (u.is_authenticated and (u.is_superuser or u.is_moderator)):
+        raise Http404()
+    claim = get_object_or_404(Claim, pk=request.POST["claim_id"])
+    if claim.reviewed_by:
+        raise Http404()
+    action_type = request.POST["action_type"]
+    if action_type == "approve":
+        claim.approved = True
+    elif action_type == "reject":
+        claim.approved = False
+    else:
+        raise Http404()
+    claim.reviewed_by = u
+    claim.reviewed_at = datetime.now(tz=timezone.utc)
+    claim.save()
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        f'Thank you for moderating "{claim}"',
+    )
+    return redirect("claims:moderate")
 
 
 class ObjectClaimListView(LoginRequiredMixin, ListView):

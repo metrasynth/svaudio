@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Claim Moderation{% endblock %}
+
+{% block nav_active_claims %}active{% endblock %}
+
+{% block content %}
+  {% if not object_list.count %}
+    <p>No pending claims.</p>
+  {% else %}
+    <ul>
+      {% for claim in object_list %}
+        <li>
+          {{ claim.created_at|naturaltime }},
+          <a href="{{ claim.user.get_absolute_url }}">{{ user.display_name }}</a>
+          claimed ownership of
+          <a href="{{ claim.content_object.get_absolute_url }}">{{ claim.content_object }}</a>.
+          <form action="{% url 'claims:moderate-action' %}" method="post" style="display: inline-block">
+            {% csrf_token %}
+            <input type="hidden" name="claim_id" value="{{ claim.id }}">
+            <input type="hidden" name="action_type" value="approve">
+            <button type="submit" class="btn btn-sm btn-primary">Approve</button>
+          </form>
+          <form action="{% url 'claims:moderate-action' %}" method="post" style="display: inline-block">
+            {% csrf_token %}
+            <input type="hidden" name="claim_id" value="{{ claim.id }}">
+            <input type="hidden" name="action_type" value="reject">
+            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

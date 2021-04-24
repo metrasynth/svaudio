@@ -72,6 +72,11 @@
             <li class="nav-item {% block nav_active_about %}{% endblock %}">
               <a class="nav-link" href="{% url 'about' %}">About</a>
             </li>
+            {% if request.user.is_superuser or request.user.is_moderator %}
+              <li class="nav-item {% block nav_active_claims %}{% endblock %}">
+                <a class="nav-link" href="{% url 'claims:moderate' %}">Claims</a>
+              </li>
+            {% endif %}
             {% if request.user.is_authenticated %}
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}

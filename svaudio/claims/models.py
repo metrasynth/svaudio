@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models as m
@@ -6,7 +8,12 @@ from django.utils.translation import gettext_lazy as _
 from svaudio.users.models import User
 
 
+def now_utc():
+    return datetime.now(tz=timezone.utc)
+
+
 class Claim(m.Model):
+    created_at = m.DateTimeField(auto_now_add=True)
     user = m.ForeignKey(
         User,
         on_delete=m.CASCADE,
@@ -46,4 +53,13 @@ class Claim(m.Model):
             content_type__app_label=model._meta.app_label,
             content_type__model=model._meta.model_name,
             object_id=obj.pk,
+        )
+
+    def __str__(self):
+        if not self.reviewed_at:
+            status = "pending review"
+        else:
+            status = "approved" if self.approved else "rejected"
+        return (
+            f"Claim by {self.user.display_name()} for {self.content_object} ({status})"
         )
