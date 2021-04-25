@@ -24,7 +24,9 @@
         <ul>
           {% for claim in claims %}
             {% with claim.content_object as obj %}
-              <li><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></li>
+              {% if obj.listed or object == request.user %}
+                <li><a href="{{ obj.get_absolute_url }}">{{ obj }}</a>{% if not obj.listed %} (Unlisted){% endif %}</li>
+              {% endif %}
             {% endwith %}
           {% endfor %}
         </ul>

@@ -343,6 +343,9 @@ MARKDOWNIFY = {
     "bio": {
         "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
     },
+    "description": {
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
+    },
 }
 
 # django-taggit + local customizations

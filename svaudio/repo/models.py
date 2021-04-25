@@ -190,8 +190,22 @@ class Resource(m.Model):
         blank=True,
         help_text="Name of this resource.",
     )
-    alt_name = m.CharField(max_length=500, blank=True, null=True)
-    description = m.TextField(blank=True, null=True)
+    alt_name = m.CharField(
+        "Alternate name",
+        max_length=500,
+        blank=True,
+        null=True,
+        help_text="(Optional) Name to show instead of the one embedded in the file.",
+    )
+    description = m.TextField(
+        blank=True,
+        null=True,
+        help_text="(Optional) Full description. Limited Markdown supported.",
+    )
+    listed = m.BooleanField(
+        default=True,
+        help_text="Uncheck this to remove from search results.",
+    )
 
     tags = TaggableManager(through=TaggedItem)
 
@@ -200,12 +214,11 @@ class Resource(m.Model):
         ordering = ["-file__cached_at"]
 
     def __str__(self):
-        return self.display_name
+        return self.display_name()
 
     def display_name(self):
-        return (
-            (self.alt_name and self.alt_name.strip()) or self.name.strip()
-        ) or "(untitled)"
+        alt_name = self.alt_name.strip() if self.alt_name else ""
+        return alt_name or self.name.strip() or "(untitled)"
 
 
 class Module(VoteModel, Resource):
@@ -221,6 +234,9 @@ class Module(VoteModel, Resource):
     def get_absolute_url(self):
         return reverse("repo:module-detail", kwargs={"hash": self.file.hash})
 
+    def get_update_url(self):
+        return reverse("repo:module-update", kwargs={"hash": self.file.hash})
+
 
 class Project(VoteModel, Resource):
     """A SunVox project found within a File."""
@@ -234,3 +250,6 @@ class Project(VoteModel, Resource):
 
     def get_absolute_url(self):
         return reverse("repo:project-detail", kwargs={"hash": self.file.hash})
+
+    def get_update_url(self):
+        return reverse("repo:project-update", kwargs={"hash": self.file.hash})

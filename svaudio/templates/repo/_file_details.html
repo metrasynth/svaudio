@@ -2,6 +2,9 @@
 <h2>File details</h2>
 
 <ul>
+  {% if object.name != object.display_name %}
+    <li>Original name: {{ object.name }}</li>
+  {% endif %}
   <li>Hash: {{ object.file.hash }}</li>
   <li>Size: {{ object.file.size }}</li>
   {% with object.file.media_url as media_url %}
