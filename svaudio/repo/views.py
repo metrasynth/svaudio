@@ -101,7 +101,7 @@ module_update_view = ModuleUpdateView.as_view()
 class ProjectsListView(ListView):
 
     model = m.Project
-    queryset = m.Project.objects.filter(listed=True)
+    queryset = m.Project.objects.filter(listed=True).order_by("-file__cached_at")
 
 
 project_list_view = ProjectsListView.as_view()
