@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load claims static compress markdownify %}
 
-{% block title %}Project: {{ object.name }}{% endblock %}
+{% block title %}Project: {{ object.display_name }}{% endblock %}
 
 {% block nav_active_projects %}active{% endblock %}
 
 {% block content %}
-  <h1>Project: {{ object.name }}</h1>
+  <h1>Project: {{ object.display_name }}</h1>
 
   {% approved_claims_for_object object as claims %}
 
