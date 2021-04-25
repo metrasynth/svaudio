@@ -352,6 +352,9 @@ MARKDOWNIFY = {
     "description": {
         "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
     },
+    "comment": {
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
+    },
 }
 
 # django-taggit + local customizations
@@ -363,3 +366,6 @@ INSTALLED_APPS += ["vote"]
 
 # actstream
 INSTALLED_APPS += ["actstream"]
+
+# django-contrib-comments
+INSTALLED_APPS += ["django_comments"]
