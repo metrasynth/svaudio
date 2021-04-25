@@ -5,9 +5,11 @@ from svaudio.repo.views import (
     module_add_tag_view,
     module_detail_view,
     module_list_view,
+    module_update_view,
     project_add_tag_view,
     project_detail_view,
     project_list_view,
+    project_update_view,
 )
 
 app_name = "repo"
@@ -33,6 +35,11 @@ urlpatterns = [
         name="module-add-tag",
     ),
     path(
+        "modules/<str:hash>/~update/",
+        view=module_update_view,
+        name="module-update",
+    ),
+    path(
         "projects/",
         view=project_list_view,
         name="project-list",
@@ -46,5 +53,10 @@ urlpatterns = [
         "projects/<str:hash>/~add-tag/",
         view=project_add_tag_view,
         name="project-add-tag",
+    ),
+    path(
+        "projects/<str:hash>/~update/",
+        view=project_update_view,
+        name="project-update",
     ),
 ]

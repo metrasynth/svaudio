@@ -8,7 +8,7 @@ from django.views.generic import DetailView, RedirectView, UpdateView
 User = get_user_model()
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(DetailView):
 
     model = User
     slug_field = "username"

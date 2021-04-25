@@ -1,16 +1,20 @@
 {% extends "base.html" %}
-{% load claims static %}
+{% load claims static markdownify %}
 
-{% block title %}Module: {{ object.name }}{% endblock %}
+{% block title %}Module: {{ object.display_name }}{% endblock %}
 
 {% block nav_active_modules %}active{% endblock %}
 
 {% block content %}
-  <h1>Module: {{ object.name }}</h1>
+  <h1>Module: {{ object.display_name }}</h1>
 
   {% approved_claims_for_object object as claims %}
 
   {% include "repo/_byline.html" %}
+
+  {% if not object.listed %}
+    <p>Note: The owner of this module has marked it as unlisted.</p>
+  {% endif %}
 
   <p>
     {% include "_fragments/_tag_links.html" with modelname="module" object=object %}
@@ -19,6 +23,13 @@
   <div>
     {% include "repo/_add_tag_inline_form.html" with add_tag_url_name="repo:module-add-tag" %}
   </div>
+
+  {% if object.description %}
+    <hr>
+    <div>
+      {{ object.description|markdownify:"description" }}
+    </div>
+  {% endif %}
 
   <hr>
 

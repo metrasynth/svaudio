@@ -3,6 +3,8 @@ from typing import Optional
 from urllib.parse import urljoin
 
 from django.conf import settings
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db import models as m
 from django.db import transaction
 from django.urls import reverse
@@ -184,11 +186,52 @@ class Fetch(m.Model):
         start_fetch.delay(fetch_id=self.id)
 
 
-class Module(VoteModel, m.Model):
-    """A SunVox module found within a File."""
+class Resource(m.Model):
+    name = m.CharField(
+        max_length=500,
+        blank=True,
+        help_text="Name of this resource.",
+    )
+    alt_name = m.CharField(
+        "Alternate name",
+        max_length=500,
+        blank=True,
+        null=True,
+        help_text="(Optional) Name to show instead of the one embedded in the file.",
+    )
+    description = m.TextField(
+        blank=True,
+        null=True,
+        help_text="(Optional) Full description. Limited Markdown supported.",
+    )
+    listed = m.BooleanField(
+        default=True,
+        help_text="Uncheck this to remove from search results.",
+    )
+
+    tags = TaggableManager(through=TaggedItem)
 
     class Meta:
+        abstract = True
         ordering = ["-file__cached_at"]
+
+    def __str__(self):
+        return self.display_name()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.clear_caches()
+
+    def clear_caches(self):
+        raise NotImplementedError()
+
+    def display_name(self):
+        alt_name = self.alt_name.strip() if self.alt_name else ""
+        return alt_name or self.name.strip() or "(untitled)"
+
+
+class Module(VoteModel, Resource):
+    """A SunVox module found within a File."""
 
     file = m.OneToOneField(
         "File",
@@ -196,26 +239,20 @@ class Module(VoteModel, m.Model):
         related_name="module",
         help_text="File containing the content of this module.",
     )
-    name = m.CharField(
-        max_length=500,
-        blank=True,
-        help_text="Name of this module.",
-    )
 
-    tags = TaggableManager(through=TaggedItem)
-
-    def __str__(self):
-        return self.name.strip() or "(Untitled)"
+    def clear_caches(self):
+        cache.delete(make_template_fragment_key("object-tag-list", ["module", self.pk]))
+        cache.delete(make_template_fragment_key("module-table-row", [self.pk]))
 
     def get_absolute_url(self):
         return reverse("repo:module-detail", kwargs={"hash": self.file.hash})
 
+    def get_update_url(self):
+        return reverse("repo:module-update", kwargs={"hash": self.file.hash})
 
-class Project(VoteModel, m.Model):
+
+class Project(VoteModel, Resource):
     """A SunVox project found within a File."""
-
-    class Meta:
-        ordering = ["-file__cached_at"]
 
     file = m.OneToOneField(
         "File",
@@ -223,16 +260,15 @@ class Project(VoteModel, m.Model):
         related_name="project",
         help_text="File containing the content of this project.",
     )
-    name = m.CharField(
-        max_length=500,
-        blank=True,
-        help_text="Name of this project.",
-    )
 
-    tags = TaggableManager(through=TaggedItem)
-
-    def __str__(self):
-        return self.name.strip() or "(Untitled)"
+    def clear_caches(self):
+        cache.delete(
+            make_template_fragment_key("object-tag-list", ["project", self.pk])
+        )
+        cache.delete(make_template_fragment_key("project-table-row", [self.pk]))
 
     def get_absolute_url(self):
         return reverse("repo:project-detail", kwargs={"hash": self.file.hash})
+
+    def get_update_url(self):
+        return reverse("repo:project-update", kwargs={"hash": self.file.hash})

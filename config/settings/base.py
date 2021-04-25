@@ -318,6 +318,12 @@ REST_FRAMEWORK = {
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
+
+# django-extensions
+# ------------------------------------------------------------------------------
+# https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
+INSTALLED_APPS += ["django_extensions"]  # noqa F405
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 
@@ -341,6 +347,9 @@ MARKDOWNIFY = {
         ],
     },
     "bio": {
+        "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
+    },
+    "description": {
         "WHITELIST_TAGS": bleach.sanitizer.ALLOWED_TAGS + ["p"],
     },
 }

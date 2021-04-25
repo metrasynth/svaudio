@@ -4,14 +4,14 @@ from actstream import action
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 from django.db.models import Model
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
+from ..claims.models import Claim
 from ..tags.models import Tag
 from ..verbs import Verb
 from . import models as m
@@ -38,6 +38,7 @@ location_submit_view = LocationsSubmitView.as_view()
 class ModulesListView(ListView):
 
     model = m.Module
+    queryset = m.Module.objects.filter(listed=True).order_by("-file__cached_at")
 
 
 module_list_view = ModulesListView.as_view()
@@ -51,7 +52,7 @@ class GetByHashMixin:
         return self.model.objects.get(file__hash=self.kwargs.get("hash"))
 
 
-class ModulesDetailView(GetByHashMixin, DetailView):
+class ModulesDetailView(GetByHashMixin, SuccessMessageMixin, DetailView):
 
     model = m.Module
 
@@ -59,9 +60,48 @@ class ModulesDetailView(GetByHashMixin, DetailView):
 module_detail_view = ModulesDetailView.as_view()
 
 
+class ModuleUpdateView(GetByHashMixin, UpdateView):
+
+    model = m.Module
+    template_name = "repo/module_update.html"
+    fields = [
+        "alt_name",
+        "description",
+        "listed",
+    ]
+
+    def get_object(self, queryset=None):
+        obj = super(ModuleUpdateView, self).get_object(queryset)
+        if not obj:
+            raise Http404()
+        user_claim = (
+            Claim.claims_for(obj)
+            .filter(
+                user=self.request.user,
+                approved=True,
+            )
+            .first()
+        )
+        if not user_claim:
+            raise Http404()
+        return obj
+
+    def get_success_url(self) -> str:
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            f"Saved changes to {self.object}",
+        )
+        return self.object.get_absolute_url()
+
+
+module_update_view = ModuleUpdateView.as_view()
+
+
 class ProjectsListView(ListView):
 
     model = m.Project
+    queryset = m.Project.objects.filter(listed=True).order_by("-file__cached_at")
 
 
 project_list_view = ProjectsListView.as_view()
@@ -73,6 +113,44 @@ class ProjectsDetailView(GetByHashMixin, DetailView):
 
 
 project_detail_view = ProjectsDetailView.as_view()
+
+
+class ProjectUpdateView(GetByHashMixin, SuccessMessageMixin, UpdateView):
+
+    model = m.Project
+    template_name = "repo/project_update.html"
+    fields = [
+        "alt_name",
+        "description",
+        "listed",
+    ]
+
+    def get_object(self, queryset=None):
+        obj = super(ProjectUpdateView, self).get_object(queryset)
+        if not obj:
+            raise Http404()
+        user_claim = (
+            Claim.claims_for(obj)
+            .filter(
+                user=self.request.user,
+                approved=True,
+            )
+            .first()
+        )
+        if not user_claim:
+            raise Http404()
+        return obj
+
+    def get_success_url(self) -> str:
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            f"Saved changes to {self.object}",
+        )
+        return self.object.get_absolute_url()
+
+
+project_update_view = ProjectUpdateView.as_view()
 
 
 def module_add_tag_view(request, hash):
@@ -109,6 +187,5 @@ def _add_tag_view(modelname, request, hash):
         messages.SUCCESS,
         f"You added {count} new tag{'s' if count != 1 else ''}. Thanks!",
     )
-    cache.delete(make_template_fragment_key("object-tag-list", [modelname, obj.pk]))
-    cache.delete(make_template_fragment_key(f"{modelname}-table-row", [obj.pk]))
+    obj.clear_caches()
     return redirect(f"repo:{modelname}-detail", hash=hash)

@@ -4,7 +4,7 @@
   <tr>
     <td>
       <span>
-        <a href="{{ project.get_absolute_url }}">{% if project.name %}{{ project.name }}{% else %}(Untitled){% endif %}</a>
+        <a href="{{ project.get_absolute_url }}">{{ project.display_name }}</a>
       </span>
       {% include "_fragments/_tag_links.html" with object=project modelname="project" %}
     </td>
