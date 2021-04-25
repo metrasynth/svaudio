@@ -17,7 +17,7 @@
         </div>
       {% endif %}
 
-      {% all_approved_claims_for_user request.user as claims %}
+      {% all_approved_claims_for_user object as claims %}
       {% if claims.count %}
         <h3>Resources</h3>
 
