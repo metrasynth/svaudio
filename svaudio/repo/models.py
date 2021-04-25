@@ -3,6 +3,8 @@ from typing import Optional
 from urllib.parse import urljoin
 
 from django.conf import settings
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db import models as m
 from django.db import transaction
 from django.urls import reverse
@@ -216,6 +218,13 @@ class Resource(m.Model):
     def __str__(self):
         return self.display_name()
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.clear_caches()
+
+    def clear_caches(self):
+        raise NotImplementedError()
+
     def display_name(self):
         alt_name = self.alt_name.strip() if self.alt_name else ""
         return alt_name or self.name.strip() or "(untitled)"
@@ -230,6 +239,10 @@ class Module(VoteModel, Resource):
         related_name="module",
         help_text="File containing the content of this module.",
     )
+
+    def clear_caches(self):
+        cache.delete(make_template_fragment_key("object-tag-list", ["module", self.pk]))
+        cache.delete(make_template_fragment_key("module-table-row", [self.pk]))
 
     def get_absolute_url(self):
         return reverse("repo:module-detail", kwargs={"hash": self.file.hash})
@@ -247,6 +260,12 @@ class Project(VoteModel, Resource):
         related_name="project",
         help_text="File containing the content of this project.",
     )
+
+    def clear_caches(self):
+        cache.delete(
+            make_template_fragment_key("object-tag-list", ["project", self.pk])
+        )
+        cache.delete(make_template_fragment_key("project-table-row", [self.pk]))
 
     def get_absolute_url(self):
         return reverse("repo:project-detail", kwargs={"hash": self.file.hash})

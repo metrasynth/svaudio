@@ -4,8 +4,6 @@ from actstream import action
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 from django.db.models import Model
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -189,6 +187,5 @@ def _add_tag_view(modelname, request, hash):
         messages.SUCCESS,
         f"You added {count} new tag{'s' if count != 1 else ''}. Thanks!",
     )
-    cache.delete(make_template_fragment_key("object-tag-list", [modelname, obj.pk]))
-    cache.delete(make_template_fragment_key(f"{modelname}-table-row", [obj.pk]))
+    obj.clear_caches()
     return redirect(f"repo:{modelname}-detail", hash=hash)
