@@ -190,6 +190,8 @@ class Resource(m.Model):
         blank=True,
         help_text="Name of this resource.",
     )
+    alt_name = m.CharField(max_length=500, blank=True, null=True)
+    description = m.TextField(blank=True, null=True)
 
     tags = TaggableManager(through=TaggedItem)
 
@@ -198,7 +200,12 @@ class Resource(m.Model):
         ordering = ["-file__cached_at"]
 
     def __str__(self):
-        return self.name.strip() or "(Untitled)"
+        return self.display_name
+
+    def display_name(self):
+        return (
+            (self.alt_name and self.alt_name.strip()) or self.name.strip()
+        ) or "(untitled)"
 
 
 class Module(VoteModel, Resource):
