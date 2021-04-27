@@ -1,0 +1,11 @@
+{% load markdownify humanize %}
+<dl id="comments">
+  {% for comment in comment_list %}
+    <dt id="c{{ comment.id }}">
+      {{ comment.submit_date }} - <a href="{{ comment.user.get_absolute_url }}">{{ comment.user }}</a>
+    </dt>
+    <dd>
+      <div>{{ comment.comment|markdownify:"comment" }}</div>
+    </dd>
+  {% endfor %}
+</dl>
