@@ -316,6 +316,8 @@ Session.vim
 # Temporary
 .netrwhist
 
+.ipython
+
 ### Project template
 
 MailHog
