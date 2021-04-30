@@ -1,4 +1,4 @@
--e git+https://github.com/metrasynth/radiant-voices@master#egg=radiant-voices
+https://github.com/metrasynth/radiant-voices/archive/13db34eb0c451748401abc8e887f3229c968fe37.zip#egg=radiant-voices
 radiant-voices~=1.0.3
 pytz~=2021.1  # https://github.com/stub42/pytz
 python-slugify~=4.0.1  # https://github.com/un33k/python-slugify
@@ -9,6 +9,8 @@ whitenoise~=5.2.0  # https://github.com/evansd/whitenoise
 redis~=3.5.3  # https://github.com/andymccurdy/redis-py
 hiredis~=1.1.0  # https://github.com/redis/hiredis-py
 celery~=4.4.6  # pyup: < 5.0,!=4.4.7  # https://github.com/celery/celery
+celery-flower~=1.0.1
+tornado~=4.2
 django-celery-beat~=2.2.0  # https://github.com/celery/django-celery-beat
 uvicorn[standard]~=0.13.4  # https://github.com/encode/uvicorn
 
