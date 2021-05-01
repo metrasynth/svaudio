@@ -85,7 +85,7 @@ class File(m.Model):
         if not alias_path:
             return
         media_path = self.media_path()
-        if not alias_path.exists():
+        if not alias_path.is_symlink():
             alias_path.parent.mkdir(parents=True, exist_ok=True)
             alias_path.symlink_to(media_path)
 
