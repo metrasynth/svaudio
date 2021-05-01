@@ -84,6 +84,7 @@ LOCAL_APPS = [
     # Your stuff: custom apps go here
     "svaudio.artists",
     "svaudio.claims",
+    "svaudio.sampledata",
     "svaudio.users",
     "svaudio.repo",
 ]
