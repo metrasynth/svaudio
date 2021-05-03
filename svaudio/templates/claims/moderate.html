@@ -13,7 +13,7 @@
       {% for claim in object_list %}
         <li>
           {{ claim.created_at|naturaltime }},
-          <a href="{{ claim.user.get_absolute_url }}">{{ user.display_name }}</a>
+          <a href="{{ claim.user.get_absolute_url }}">{{ claim.user.display_name }}</a>
           claimed ownership of
           <a href="{{ claim.content_object.get_absolute_url }}">{{ claim.content_object }}</a>.
           <form action="{% url 'claims:moderate-action' %}" method="post" style="display: inline-block">
