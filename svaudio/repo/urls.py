@@ -1,6 +1,7 @@
 from django.urls import path
 
 from svaudio.repo.views import (
+    location_submit_api_view,
     location_submit_view,
     module_add_tag_view,
     module_detail_view,
@@ -18,6 +19,11 @@ urlpatterns = [
         "locations/submit/",
         view=location_submit_view,
         name="location-submit",
+    ),
+    path(
+        "locations/submit/api/",
+        view=location_submit_api_view,
+        name="location-submit-api",
     ),
     path(
         "modules/",

@@ -51,6 +51,7 @@ def start_fetch(fetch_id: int):
                 file_type=file_type,
                 size=size,
                 cached_at=datetime.now(tz=utc),
+                metadata=location.metadata,
             )
             dest_path: Path = file.media_path()
             dest_path.parent.mkdir(parents=True, exist_ok=True)

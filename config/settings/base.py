@@ -371,3 +371,6 @@ INSTALLED_APPS += ["actstream"]
 
 # django-contrib-comments
 INSTALLED_APPS += ["django_comments"]
+
+# repo
+SVAUDIO_REPO_API_SECRET_KEY = env.str("SVAUDIO_REPO_API_SECRET_KEY")
