@@ -215,6 +215,13 @@ class Resource(m.Model):
         abstract = True
         ordering = ["-file__cached_at"]
 
+    @staticmethod
+    def clear_all_caches():
+        for item in Module.objects.all():
+            item.clear_caches()
+        for item in Project.objects.all():
+            item.clear_caches()
+
     def __str__(self):
         return self.display_name()
 
