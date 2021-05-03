@@ -75,6 +75,7 @@ class Command(BaseCommand):
 
         with create_user("su") as su:
             su.is_superuser = True
+            su.is_staff = True
             self.su = su
 
         with create_user("mod") as mod:
