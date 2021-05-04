@@ -6,11 +6,11 @@
 {% block nav_active_modules %}active{% endblock %}
 
 {% block content %}
-  <h1>Module: {{ object.display_name }}</h1>
+  <h1>{{ object.display_name }}</h1>
 
   {% approved_claims_for_object object as claims %}
 
-  {% include "repo/_byline.html" %}
+  {% include "repo/_byline.html" with resource_type="module" %}
 
   {% if not object.listed %}
     <p>Note: The owner of this module has marked it as unlisted.</p>

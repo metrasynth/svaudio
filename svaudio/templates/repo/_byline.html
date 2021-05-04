@@ -1,6 +1,4 @@
-{# params: claims #}
-{% if claims %}
-  <p>
-    {% for claim in claims %}{% if forloop.first %}By{% else %},{% endif %} <a href="{% url 'users:detail' username=claim.user.username %}">{{ claim.user.display_name }}</a>{% endfor %}
-  </p>
-{% endif %}
+{# params: claims resource_type #}
+<p>
+  SunVox {{ resource_type }} {% if claims %}{% for claim in claims %}{% if forloop.first %}by{% else %},{% endif %} <a href="{% url 'users:detail' username=claim.user.username %}">{{ claim.user.display_name }}</a>{% endfor %}{% endif %}
+</p>
