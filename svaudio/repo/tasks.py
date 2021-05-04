@@ -7,7 +7,7 @@ from tempfile import mkstemp
 
 import requests
 from pytz import utc
-from rv.api import read_sunvox_file
+from rv.api import Project, Synth, read_sunvox_file
 
 from config import celery_app
 
@@ -74,9 +74,10 @@ def start_fetch(fetch_id: int):
         if not resource:
             f.seek(0)
             sunvox_obj = read_sunvox_file(f)
-            resource, _ = resource_class.objects.get_or_create(
-                file=file,
-                name=sunvox_obj.name,
-            )
+            if isinstance(sunvox_obj, Project):
+                name = sunvox_obj.name
+            elif isinstance(sunvox_obj, Synth):
+                name = sunvox_obj.module.name
+            resource, _ = resource_class.objects.get_or_create(file=file, name=name)
         file.ensure_alias_symlink_exists()
         resource.set_initial_ownership()
