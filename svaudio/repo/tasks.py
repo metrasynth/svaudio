@@ -7,7 +7,7 @@ from tempfile import mkstemp
 
 import requests
 from pytz import utc
-from rv.api import Project, Synth, read_sunvox_file
+from rv.api import read_sunvox_file
 
 from config import celery_app
 
@@ -66,18 +66,17 @@ def start_fetch(fetch_id: int):
         location.last_good_fetch = fetch
         location.most_recent_file = file
         location.save()
-        if file_type == m.File.FileType.PROJECT:
-            project = m.Project.objects.filter(file=file).first()
-            if not project:
-                f.seek(0)
-                sunvox_obj = read_sunvox_file(f)
-                assert isinstance(sunvox_obj, Project)
-                m.Project.objects.get_or_create(file=file, name=sunvox_obj.name)
-        elif file_type == m.File.FileType.MODULE:
-            module = m.Module.objects.filter(file=file).first()
-            if not module:
-                f.seek(0)
-                sunvox_obj = read_sunvox_file(f)
-                assert isinstance(sunvox_obj, Synth)
-                m.Module.objects.get_or_create(file=file, name=sunvox_obj.module.name)
+        resource_class = {
+            m.File.FileType.MODULE: m.Module,
+            m.File.FileType.PROJECT: m.Project,
+        }[file_type]
+        resource = resource_class.objects.filter(file=file).first()
+        if not resource:
+            f.seek(0)
+            sunvox_obj = read_sunvox_file(f)
+            resource, _ = resource_class.objects.get_or_create(
+                file=file,
+                name=sunvox_obj.name,
+            )
         file.ensure_alias_symlink_exists()
+        resource.set_initial_ownership()

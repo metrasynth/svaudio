@@ -20,4 +20,4 @@ CELERY_FLOWER_PASSWORD=flower
 # Repo
 # ------------------------------------------------------------------------------
 
-REPO_API_SECRET_KEY=abc123
+SVAUDIO_REPO_API_SECRET_KEY=abc123

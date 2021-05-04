@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import urljoin
 
+from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
@@ -14,6 +15,7 @@ from slugify import slugify
 from taggit.managers import TaggableManager
 from vote.models import VoteModel
 
+from svaudio.claims.models import Claim, now_utc
 from svaudio.repo.tasks import start_fetch
 from svaudio.tags.models import TaggedItem
 from svaudio.users.models import User
@@ -250,6 +252,24 @@ class Resource(m.Model):
 
     def metadata(self):
         return self.file.metadata
+
+    def set_initial_ownership(self):
+        if Claim.claims_for(self).count() > 0:
+            return
+        metadata = self.metadata() or {}
+        discord_uid = metadata.get("discord", {}).get("uid")
+        if discord_uid:
+            criteria = dict(provider="discord", uid=discord_uid)
+            for social_account in SocialAccount.objects.filter(**criteria):
+                user = social_account.user
+                Claim.objects.create(
+                    user=user,
+                    content_object=self,
+                    approved=True,
+                    reviewed_at=now_utc(),
+                )
+                self.listed = user.auto_publish_uploads
+                self.save()
 
 
 class Module(VoteModel, Resource):
