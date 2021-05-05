@@ -1,14 +1,18 @@
+import json
 from typing import Any, Dict
 
 from actstream import action
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db import DatabaseError
 from django.db.models import Model
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from ..claims.models import Claim
@@ -33,6 +37,28 @@ class LocationsSubmitView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 
 location_submit_view = LocationsSubmitView.as_view()
+
+
+@csrf_exempt
+def location_submit_api_view(request):
+    if request.method != "POST":
+        raise Http404()
+    if request.content_type != "application/json":
+        raise Http404()
+    body = json.loads(request.body) or {}
+    private_key = body.get("key")
+    if private_key != settings.SVAUDIO_REPO_API_SECRET_KEY:
+        raise Http404()
+    url = body.get("url")
+    metadata = body.get("metadata")
+    if not url:
+        raise Http404()
+    try:
+        m.Location.objects.create(url=url, metadata=metadata)
+        response = {"submitted": True}
+    except DatabaseError:
+        response = {"submitted": False}
+    return HttpResponse(content=json.dumps(response), content_type="application/json")
 
 
 class ModulesListView(ListView):

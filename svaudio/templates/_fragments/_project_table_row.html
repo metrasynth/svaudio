@@ -1,15 +1,15 @@
 {# params: project #}
-{% load cache humanize %}
-{% cache None project-table-row project.pk %}
-  <tr>
+{% load cache %}
+<tr>
+  {% cache None project-table-row project.pk %}
     <td>
       <span>
         <a href="{{ project.get_absolute_url }}">{{ project.display_name }}</a>
       </span>
       {% include "_fragments/_tag_links.html" with object=project modelname="project" %}
     </td>
-    <td>
-      {{ project.file.cached_at | naturaltime }}
-    </td>
-  </tr>
-{% endcache %}
+  {% endcache %}
+  <td>
+    {{ project.file.cached_at }}
+  </td>
+</tr>

@@ -2,17 +2,20 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import urljoin
 
+from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
 from django.db import models as m
 from django.db import transaction
+from django.db.models.fields.json import JSONField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 from taggit.managers import TaggableManager
 from vote.models import VoteModel
 
+from svaudio.claims.models import Claim, now_utc
 from svaudio.repo.tasks import start_fetch
 from svaudio.tags.models import TaggedItem
 from svaudio.users.models import User
@@ -50,6 +53,11 @@ class File(m.Model):
         null=True,
         blank=True,
         help_text="When the file was last accessed.",
+    )
+    metadata = JSONField(
+        null=True,
+        blank=True,
+        help_text="Metadata provided by API client",
     )
 
     def file_ext(self) -> str:
@@ -128,6 +136,11 @@ class Location(m.Model):
         null=True,
         blank=True,
         help_text="Most recent file downloaded.",
+    )
+    metadata = JSONField(
+        null=True,
+        blank=True,
+        help_text="Metadata provided by API client",
     )
 
     def save(self, *args, **kw) -> None:
@@ -208,12 +221,20 @@ class Resource(m.Model):
         default=True,
         help_text="Uncheck this to remove from search results.",
     )
+    file = NotImplemented  # Implemented in subclasses.
 
     tags = TaggableManager(through=TaggedItem)
 
     class Meta:
         abstract = True
         ordering = ["-file__cached_at"]
+
+    @staticmethod
+    def clear_all_caches():
+        for item in Module.objects.all():
+            item.clear_caches()
+        for item in Project.objects.all():
+            item.clear_caches()
 
     def __str__(self):
         return self.display_name()
@@ -228,6 +249,27 @@ class Resource(m.Model):
     def display_name(self):
         alt_name = self.alt_name.strip() if self.alt_name else ""
         return alt_name or self.name.strip() or "(untitled)"
+
+    def metadata(self):
+        return self.file.metadata
+
+    def set_initial_ownership(self):
+        if Claim.claims_for(self).count() > 0:
+            return
+        metadata = self.metadata() or {}
+        discord_uid = metadata.get("discord", {}).get("uid")
+        if discord_uid:
+            criteria = dict(provider="discord", uid=discord_uid)
+            for social_account in SocialAccount.objects.filter(**criteria):
+                user = social_account.user
+                Claim.objects.create(
+                    user=user,
+                    content_object=self,
+                    approved=True,
+                    reviewed_at=now_utc(),
+                )
+                self.listed = user.auto_publish_uploads
+                self.save()
 
 
 class Module(VoteModel, Resource):

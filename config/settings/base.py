@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.discord",
     "django_celery_beat",
     "rest_framework",
     "rest_framework.authtoken",
@@ -370,3 +371,6 @@ INSTALLED_APPS += ["actstream"]
 
 # django-contrib-comments
 INSTALLED_APPS += ["django_comments"]
+
+# repo
+SVAUDIO_REPO_API_SECRET_KEY = env.str("SVAUDIO_REPO_API_SECRET_KEY")

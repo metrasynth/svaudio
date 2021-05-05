@@ -16,3 +16,8 @@ CELERY_BROKER_URL=redis://redis:6379/0
 # Flower
 CELERY_FLOWER_USER=flower
 CELERY_FLOWER_PASSWORD=flower
+
+# Repo
+# ------------------------------------------------------------------------------
+
+SVAUDIO_REPO_API_SECRET_KEY=abc123

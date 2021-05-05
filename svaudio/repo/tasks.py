@@ -51,6 +51,7 @@ def start_fetch(fetch_id: int):
                 file_type=file_type,
                 size=size,
                 cached_at=datetime.now(tz=utc),
+                metadata=location.metadata,
             )
             dest_path: Path = file.media_path()
             dest_path.parent.mkdir(parents=True, exist_ok=True)
@@ -65,18 +66,18 @@ def start_fetch(fetch_id: int):
         location.last_good_fetch = fetch
         location.most_recent_file = file
         location.save()
-        if file_type == m.File.FileType.PROJECT:
-            project = m.Project.objects.filter(file=file).first()
-            if not project:
-                f.seek(0)
-                sunvox_obj = read_sunvox_file(f)
-                assert isinstance(sunvox_obj, Project)
-                m.Project.objects.get_or_create(file=file, name=sunvox_obj.name)
-        elif file_type == m.File.FileType.MODULE:
-            module = m.Module.objects.filter(file=file).first()
-            if not module:
-                f.seek(0)
-                sunvox_obj = read_sunvox_file(f)
-                assert isinstance(sunvox_obj, Synth)
-                m.Module.objects.get_or_create(file=file, name=sunvox_obj.module.name)
+        resource_class = {
+            m.File.FileType.MODULE: m.Module,
+            m.File.FileType.PROJECT: m.Project,
+        }[file_type]
+        resource = resource_class.objects.filter(file=file).first()
+        if not resource:
+            f.seek(0)
+            sunvox_obj = read_sunvox_file(f)
+            if isinstance(sunvox_obj, Project):
+                name = sunvox_obj.name
+            elif isinstance(sunvox_obj, Synth):
+                name = sunvox_obj.module.name
+            resource, _ = resource_class.objects.get_or_create(file=file, name=name)
         file.ensure_alias_symlink_exists()
+        resource.set_initial_ownership()

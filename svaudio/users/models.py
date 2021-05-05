@@ -21,6 +21,10 @@ class User(AbstractUser):
         default=False,
         help_text=_("Select this to be included in list of artists."),
     )
+    auto_publish_uploads = m.BooleanField(
+        default=False,
+        help_text=_("Select this to make new uploads publicly listed."),
+    )
     bio = m.TextField(
         blank=True,
         help_text=_("Limited Markdown supported"),
