@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.functions import Lower
 from django.http import Http404
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
@@ -22,14 +24,23 @@ class UserDetailView(DetailView):
     slug_field = "username"
     slug_url_kwarg = "username"
 
+    def get(self, request, *args, **kwargs):
+        try:
+            return super().get(request, *args, **kwargs)
+        except Redirection as r:
+            return redirect(r.url)
+
     def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
+        queryset = queryset or self.model
+        username = self.kwargs["username"]
+        obj = queryset.objects.filter(username=username).first()
         if obj:
             return obj
-        if not queryset:
-            raise Http404()
-        username = self.kwargs["username"].lower()
-        user = self.model.objects.filter(username__lower=username).first()
+        user = (
+            queryset.objects.annotate(username_lower=Lower("username"))
+            .filter(username_lower=username.lower())
+            .first()
+        )
         if not user:
             raise Http404()
         url = reverse("users:detail", kwargs={"username": user.username})
