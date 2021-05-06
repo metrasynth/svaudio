@@ -1,0 +1,13 @@
+{% if object == request.user %}
+  <ul class="nav nav-tabs mt-4 mb-2">
+    <li class="nav-item">
+      <a class="nav-link {% if current == 'profile' %}active{% endif %}" href="{% url "users:redirect" %}">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if current == 'email' %}active{% endif %}" href="{% url "account_email" %}">E-Mail</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if current == 'social' %}active{% endif %}" href="{% url "socialaccount_connections" %}">Social Accounts</a>
+    </li>
+  </ul>
+{% endif %}

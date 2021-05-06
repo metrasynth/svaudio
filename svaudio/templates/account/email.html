@@ -7,7 +7,10 @@
 {% block head_title %}{% trans "Account" %}{% endblock %}
 
 {% block inner %}
-<h1>{% trans "E-mail Addresses" %}</h1>
+
+<h1>{{ user.display_name }}</h1>
+
+{% include "users/_user_profile_tabs.html" with current="email" object=user %}
 
 {% if user.emailaddress_set.all %}
 <p>{% trans 'The following e-mail addresses are associated with your account:' %}</p>

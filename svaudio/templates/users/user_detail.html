@@ -6,36 +6,36 @@
 {% block nav_active_profile %}{% if object == request.user %}active{% endif %}{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="row">
+  <div class="col">
+    <h1>{% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}</h1>
 
-  <div class="row">
-    <div class="col-sm-12">
-      <h2>{% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}</h2>
+    {% include "users/_user_profile_tabs.html" with current="profile" %}
 
-      {% if object.bio %}
-        <h3>Bio</h3>
-        <div>
-          {{ object.bio | markdownify:"bio" }}
-        </div>
-      {% endif %}
+    {% if object.bio %}
+      <h3>Bio</h3>
+      <div>
+        {{ object.bio | markdownify:"bio" }}
+      </div>
+    {% endif %}
 
-      {% all_approved_claims_for_user object as claims %}
-      {% if claims.count %}
-        <h3>Resources</h3>
+    {% all_approved_claims_for_user object as claims %}
+    {% if claims.count %}
+      <h3>Resources</h3>
 
-        <ul>
-          {% for claim in claims %}
-            {% with claim.content_object as obj %}
-              {% if obj.listed or obj and object == request.user %}
-                <li><a href="{{ obj.get_absolute_url }}">{{ obj }}</a>{% if not obj.listed %} (Unlisted){% endif %}</li>
-              {% endif %}
-            {% endwith %}
-          {% endfor %}
-        </ul>
-      {% endif %}
+      <ul>
+        {% for claim in claims %}
+          {% with claim.content_object as obj %}
+            {% if obj.listed or obj and object == request.user %}
+              <li><a href="{{ obj.get_absolute_url }}">{{ obj }}</a>{% if not obj.listed %} (Unlisted){% endif %}</li>
+            {% endif %}
+          {% endwith %}
+        {% endfor %}
+      </ul>
+    {% endif %}
 
-    </div>
   </div>
+</div>
 
 {% if object == request.user %}
 <!-- Action buttons -->
@@ -43,15 +43,10 @@
 
   <div class="col-sm-12">
     <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">Edit Profile</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">Change E-Mail</a>
-    <a class="btn btn-primary" href="{% url 'socialaccount_connections' %}" role="button">Manage Account Connections</a>
-    <!-- Your Stuff: Custom user template urls -->
   </div>
 
 </div>
 <!-- End Action buttons -->
 {% endif %}
 
-
-</div>
 {% endblock content %}
