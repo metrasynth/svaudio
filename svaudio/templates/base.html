@@ -72,9 +72,6 @@
             <li class="nav-item {% block nav_active_tags %}{% endblock %}">
               <a class="nav-link" href="{% url 'tags:tag-list' %}">Tags</a>
             </li>
-            <li class="nav-item {% block nav_active_about %}{% endblock %}">
-              <a class="nav-link" href="{% url 'about' %}">About</a>
-            </li>
             {% if request.user.is_superuser or request.user.is_moderator %}
               <li class="nav-item {% block nav_active_claims %}{% endblock %}">
                 <a class="nav-link" href="{% url 'claims:moderate' %}">Claims</a>
@@ -105,7 +102,7 @@
 
     </div>
 
-    <div class="container">
+    <div class="container mb-5">
 
       {% if messages %}
           {% for message in messages %}
@@ -118,6 +115,36 @@
       {% endblock content %}
 
     </div> <!-- /container -->
+
+    <div class="border-top">
+      <div class="container small">
+        <div class="row mt-4">
+          <div class="col">
+            <ul class="list-unstyled">
+              <li>&copy; MetraSynth (site code &amp; design)</li>
+              <li>&copy; contributors (site content)</li>
+              <li>
+                <ul class="list-inline">
+                  <li class="list-inline-item">
+                    <a href="https://github.com/metrasynth/svaudio/">GitHub</a>
+                  </li>
+                  <li class="list-inline-item">
+                    <a href="mailto:contact@sunvox.audio">Email</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="col">
+            <ul class="list-unstyled">
+              <li><a href="/">Home</a></li>
+              <li><a href="/about/">About</a></li>
+              <li><a href="/privacy/">Privacy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {% block modal %}{% endblock modal %}
 
