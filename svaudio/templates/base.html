@@ -81,7 +81,7 @@
               </li>
             {% endif %}
             {% if request.user.is_authenticated %}
-              <li class="nav-item">
+              <li class="nav-item {% block nav_active_profile %}{% endblock %}">
                 {# URL provided by django-allauth/account/urls.py #}
                 <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
               </li>
