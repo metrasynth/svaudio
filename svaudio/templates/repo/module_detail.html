@@ -6,7 +6,7 @@
 {% block nav_active_modules %}active{% endblock %}
 
 {% block content %}
-  <h1>{{ object.display_name }}</h1>
+  <h1 class="resource-name">{{ object.display_name }}</h1>
 
   {% approved_claims_for_object object as claims %}
 
