@@ -3,6 +3,8 @@
 
 {% block title %}Profile: {% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}{% endblock %}
 
+{% block nav_active_profile %}{% if object == request.user %}active{% endif %}{% endblock %}
+
 {% block content %}
 <div class="container">
 
@@ -42,6 +44,7 @@
   <div class="col-sm-12">
     <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">Edit Profile</a>
     <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">Change E-Mail</a>
+    <a class="btn btn-primary" href="{% url 'socialaccount_connections' %}" role="button">Manage Account Connections</a>
     <!-- Your Stuff: Custom user template urls -->
   </div>
 
