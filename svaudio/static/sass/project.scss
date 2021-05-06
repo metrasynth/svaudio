@@ -7,6 +7,17 @@
 
 // project specific CSS goes here
 
+
+// Fonts
+
+@font-face {
+  font-family: "SunDogMedium";
+  src:
+    url("/static/fonts/SunDogMedium.woff2") format("woff2"),
+    url("/static/fonts/SunDogMedium.woff") format("woff");
+}
+
+
 ////////////////////////////////
 		//Variables//
 ////////////////////////////////
@@ -37,4 +48,18 @@ $red: #b94a48;
   background-color: $pink;
   border-color: $dark-pink;
   color: $red;
+}
+
+
+// Navbar
+
+.navbar-brand {
+  font-family: "SunDogMedium", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+
+// Resources
+
+.resource-name {
+  font-family: "SunDogMedium", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
