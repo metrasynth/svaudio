@@ -264,6 +264,7 @@ class Resource(m.Model):
         discord_uid = metadata.get("discord", {}).get("uid")
         if discord_uid:
             criteria = dict(provider="discord", uid=discord_uid)
+            listed = False
             for social_account in SocialAccount.objects.filter(**criteria):
                 user = social_account.user
                 Claim.objects.create(
@@ -272,7 +273,9 @@ class Resource(m.Model):
                     approved=True,
                     reviewed_at=now_utc(),
                 )
-                self.listed = user.auto_publish_uploads
+                listed = listed or user.auto_publish_uploads
+            if self.listed != listed:
+                self.listed = listed
                 self.save()
 
 
