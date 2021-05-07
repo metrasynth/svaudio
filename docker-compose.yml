@@ -34,6 +34,8 @@ services:
       - local_postgres_data_backups:/backups:z
     env_file:
       - ./.envs/.postgres
+    ports:
+      - "5432:5432"
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
@@ -44,6 +46,8 @@ services:
   redis:
     image: redis:5.0
     container_name: redis
+    ports:
+      - "6379:6379"
 
   celeryworker:
     <<: *django

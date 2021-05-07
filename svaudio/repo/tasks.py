@@ -81,3 +81,11 @@ def start_fetch(fetch_id: int):
             resource, _ = resource_class.objects.get_or_create(file=file, name=name)
         file.ensure_alias_symlink_exists()
         resource.set_initial_ownership()
+
+
+@celery_app.task()
+def globally_set_initial_ownership():
+    for module in m.Module.objects.all():
+        module.set_initial_ownership()
+    for project in m.Project.objects.all():
+        project.set_initial_ownership()

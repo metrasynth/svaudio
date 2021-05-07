@@ -1,15 +1,9 @@
-from datetime import datetime, timezone
-
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models as m
 from django.utils.translation import gettext_lazy as _
 
 from svaudio.users.models import User
-
-
-def now_utc():
-    return datetime.now(tz=timezone.utc)
 
 
 class Claim(m.Model):

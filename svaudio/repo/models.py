@@ -9,16 +9,19 @@ from django.core.cache.utils import make_template_fragment_key
 from django.db import models as m
 from django.db import transaction
 from django.db.models.fields.json import JSONField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 from taggit.managers import TaggableManager
 from vote.models import VoteModel
 
-from svaudio.claims.models import Claim, now_utc
-from svaudio.repo.tasks import start_fetch
+from svaudio.claims.models import Claim
+from svaudio.repo.tasks import globally_set_initial_ownership, start_fetch
 from svaudio.tags.models import TaggedItem
 from svaudio.users.models import User
+from svaudio.utils.timestamp import now_utc
 
 
 class File(m.Model):
@@ -146,7 +149,7 @@ class Location(m.Model):
     def save(self, *args, **kw) -> None:
         is_new = not self.id
         super().save(*args, **kw)
-        if is_new:
+        if is_new and not (self.url.startswith("test://") and "?noFetch=1" in self.url):
             self.fetches.create()
 
 
@@ -188,7 +191,7 @@ class Fetch(m.Model):
     )
 
     def save(self, *args, **kw) -> None:
-        should_fetch = not self.id
+        should_fetch = not self.id and "?noFetch=1" not in self.location.url
         super().save(*args, **kw)
         if should_fetch:
             assert self.id
@@ -256,10 +259,12 @@ class Resource(m.Model):
     def set_initial_ownership(self):
         if Claim.claims_for(self).count() > 0:
             return
+        print(f"Setting initial ownership for {self}...")
         metadata = self.metadata() or {}
         discord_uid = metadata.get("discord", {}).get("uid")
         if discord_uid:
             criteria = dict(provider="discord", uid=discord_uid)
+            listed = False
             for social_account in SocialAccount.objects.filter(**criteria):
                 user = social_account.user
                 Claim.objects.create(
@@ -268,7 +273,9 @@ class Resource(m.Model):
                     approved=True,
                     reviewed_at=now_utc(),
                 )
-                self.listed = user.auto_publish_uploads
+                listed = listed or user.auto_publish_uploads
+            if self.listed != listed:
+                self.listed = listed
                 self.save()
 
 
@@ -314,3 +321,9 @@ class Project(VoteModel, Resource):
 
     def get_update_url(self):
         return reverse("repo:project-update", kwargs={"hash": self.file.hash})
+
+
+@receiver(post_save, sender=SocialAccount)
+def globally_set_initial_ownership_on_social_account_creation(sender, **kwargs):
+    if kwargs.get("created"):
+        globally_set_initial_ownership.delay()
