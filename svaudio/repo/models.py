@@ -259,7 +259,6 @@ class Resource(m.Model):
     def set_initial_ownership(self):
         if Claim.claims_for(self).count() > 0:
             return
-        print(f"Setting initial ownership for {self}...")
         metadata = self.metadata() or {}
         discord_uid = metadata.get("discord", {}).get("uid")
         if discord_uid:
@@ -267,6 +266,7 @@ class Resource(m.Model):
             listed = False
             for social_account in SocialAccount.objects.filter(**criteria):
                 user = social_account.user
+                print(f"Setting initial ownership for {self} to {user}...")
                 Claim.objects.create(
                     user=user,
                     content_object=self,
