@@ -8,7 +8,7 @@
 {% block content %}
 <div class="row">
   <div class="col">
-    <h1>{% if object.name %}{{ object.name }}{% else %}{{ object.username }}{% endif %}</h1>
+    {% include "_fragments/_user_display_name_heading.html" %}
 
     {% include "users/_user_profile_tabs.html" with current="profile" %}
 
