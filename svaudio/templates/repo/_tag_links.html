@@ -2,6 +2,6 @@
 {% load cache %}
 {% cache None object-tag-list modelname object.pk %}
   {% for tag in object.tags.all %}
-    <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge badge-primary">#{{ tag.name }}</span></a>
+    <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge bg-primary">#{{ tag.name }}</span></a>
   {% endfor %}
 {% endcache %}

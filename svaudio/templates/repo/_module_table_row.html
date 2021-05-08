@@ -6,7 +6,7 @@
       <span>
         <a href="{{ module.get_absolute_url }}">{{ module.display_name }}</a>
       </span>
-      {% include "_fragments/_tag_links.html" with object=module modelname="module" %}
+      {% include "repo/_tag_links.html" with object=module modelname="module" %}
     </td>
   {% endcache %}
   <td>
