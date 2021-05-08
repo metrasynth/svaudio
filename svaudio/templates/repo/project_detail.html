@@ -17,7 +17,7 @@
   {% endif %}
 
   <p>
-    {% include "_fragments/_tag_links.html" with modelname="project" object=object %}
+    {% include "repo/_tag_links_editable.html" with modelname="project" object=object %}
   </p>
 
   <div>
@@ -123,4 +123,14 @@
       sv_stop(0)
     }
   </script>
+
+  <script type="application/javascript">
+    function submitHiddenTagRemoveForm(tagged_item_id, slug) {
+      let hiddenTagRemoveForm_tagged_item_id = document.getElementById("hiddenTagRemoveForm_tagged_item_id")
+      hiddenTagRemoveForm_tagged_item_id.setAttribute("value", tagged_item_id)
+      document.forms['hiddenTagRemoveForm'].submit()
+      return null
+    }
+  </script>
+
 {% endblock %}

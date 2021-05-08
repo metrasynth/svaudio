@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from ..claims.models import Claim
-from ..tags.models import Tag
+from ..tags.models import Tag, TaggedItem
 from ..verbs import Verb
 from . import models as m
 
@@ -183,8 +183,16 @@ def module_add_tag_view(request, hash):
     return _add_tag_view("module", request, hash)
 
 
+def module_remove_tagged_item_view(request, hash):
+    return _remove_tagged_item_view("module", request, hash)
+
+
 def project_add_tag_view(request, hash):
     return _add_tag_view("project", request, hash)
+
+
+def project_remove_tagged_item_view(request, hash):
+    return _remove_tagged_item_view("project", request, hash)
 
 
 def _add_tag_view(modelname, request, hash):
@@ -215,4 +223,21 @@ def _add_tag_view(modelname, request, hash):
         f"You added {count} new tag{'s' if count != 1 else ''}. Thanks!",
     )
     obj.clear_caches()
+    return redirect(f"repo:{modelname}-detail", hash=hash)
+
+
+def _remove_tagged_item_view(modelname, request, hash):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect(f"repo:{modelname}-detail", hash=hash)
+    model = {"module": m.Module, "project": m.Project}[modelname]
+    obj = get_object_or_404(model, file__hash=hash)
+    tagged_item_id = request.POST["tagged_item_id"]
+    tagged_items = obj.tagged_items.filter(id=tagged_item_id)
+    tagged_item: TaggedItem
+    for tagged_item in tagged_items:
+        if request.user.is_moderator or (
+            tagged_item.recently_added() and tagged_item.added_by == user
+        ):
+            tagged_item.delete()
     return redirect(f"repo:{modelname}-detail", hash=hash)

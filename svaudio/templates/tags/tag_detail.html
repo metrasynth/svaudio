@@ -11,14 +11,14 @@
   {% with object.module_items as module_items %}
     {% if module_items.count %}
       <h2>Modules</h2>
-      {% include "_fragments/../repo/_module_table.html" with object_list=module_items tag_items=True %}
+      {% include "repo/_module_table.html" with object_list=module_items tag_items=True %}
     {% endif %}
   {% endwith %}
 
   {% with object.project_items as project_items %}
     {% if project_items.count %}
       <h2>Projects</h2>
-      {% include "_fragments/../repo/_project_table.html" with object_list=project_items tag_items=True %}
+      {% include "repo/_project_table.html" with object_list=project_items tag_items=True %}
     {% endif %}
   {% endwith %}
 {% endblock content %}

@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.contenttypes.models import ContentType
 from django.db import models as m
 from django.db import router
@@ -8,11 +10,12 @@ from taggit.utils import require_instance_manager
 from vote.models import VoteModel
 
 from svaudio.users.models import User
+from svaudio.utils.timestamp import now_utc
 
 
 class Tag(TagBase):
     class Meta:
-        ordering = ["name"]
+        ordering = ["slug"]
 
     def module_items(self):
         return self.tags_taggeditem_items.filter(content_type__model="module")
@@ -22,6 +25,9 @@ class Tag(TagBase):
 
 
 class TaggedItem(VoteModel, GenericTaggedItemBase):
+    class Meta:
+        ordering = ["tag__slug"]
+
     tag = m.ForeignKey(
         Tag,
         on_delete=m.CASCADE,
@@ -34,6 +40,7 @@ class TaggedItem(VoteModel, GenericTaggedItemBase):
         null=True,
         related_name="tags_added",
     )
+    added_at = m.DateTimeField(auto_now_add=True)
 
     @classmethod
     def items_for_object(cls, obj):
@@ -42,6 +49,9 @@ class TaggedItem(VoteModel, GenericTaggedItemBase):
 
     def __str__(self):
         return f"{self.content_object} tagged with {self.tag} by {self.added_by}"
+
+    def recently_added(self):
+        return now_utc() < self.added_at + timedelta(minutes=5)
 
 
 class _UserAddedTaggableManager(_TaggableManager):

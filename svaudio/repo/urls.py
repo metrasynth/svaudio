@@ -6,10 +6,12 @@ from svaudio.repo.views import (
     module_add_tag_view,
     module_detail_view,
     module_list_view,
+    module_remove_tagged_item_view,
     module_update_view,
     project_add_tag_view,
     project_detail_view,
     project_list_view,
+    project_remove_tagged_item_view,
     project_update_view,
 )
 
@@ -41,6 +43,11 @@ urlpatterns = [
         name="module-add-tag",
     ),
     path(
+        "modules/<str:hash>/~remove-tagged-item/",
+        view=module_remove_tagged_item_view,
+        name="module-remove-tagged-item",
+    ),
+    path(
         "modules/<str:hash>/~update/",
         view=module_update_view,
         name="module-update",
@@ -59,6 +66,11 @@ urlpatterns = [
         "projects/<str:hash>/~add-tag/",
         view=project_add_tag_view,
         name="project-add-tag",
+    ),
+    path(
+        "projects/<str:hash>/~remove-tagged-item/",
+        view=project_remove_tagged_item_view,
+        name="project-remove-tagged-item",
     ),
     path(
         "projects/<str:hash>/~update/",
