@@ -19,7 +19,7 @@ from vote.models import VoteModel
 
 from svaudio.claims.models import Claim
 from svaudio.repo.tasks import globally_set_initial_ownership, start_fetch
-from svaudio.tags.models import TaggedItem
+from svaudio.tags.models import TaggedItem, _UserAddedTaggableManager
 from svaudio.users.models import User
 from svaudio.utils.timestamp import now_utc
 
@@ -226,7 +226,7 @@ class Resource(m.Model):
     )
     file = NotImplemented  # Implemented in subclasses.
 
-    tags = TaggableManager(through=TaggedItem)
+    tags = TaggableManager(through=TaggedItem, manager=_UserAddedTaggableManager)
 
     class Meta:
         abstract = True

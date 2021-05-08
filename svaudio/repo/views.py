@@ -188,7 +188,8 @@ def project_add_tag_view(request, hash):
 
 
 def _add_tag_view(modelname, request, hash):
-    if not request.user.is_authenticated:
+    user = request.user
+    if not user.is_authenticated:
         return redirect(f"repo:{modelname}-detail", hash=hash)
     model = {"module": m.Module, "project": m.Project}[modelname]
     obj = get_object_or_404(model, file__hash=hash)
@@ -198,11 +199,11 @@ def _add_tag_view(modelname, request, hash):
     tags = [t[1:] if t[0:1] == "#" else t for t in tags]
     tags = {t for t in tags if t}
     existing_tags = {t.name for t in obj.tags.all()}
-    new_tags = tags - existing_tags
+    new_tags = list(sorted(tags - existing_tags))
+    obj.tags.add_by_user(user, *new_tags)
     for new_tag in new_tags:
-        obj.tags.add(new_tag)
         action.send(
-            request.user,
+            sender=user,
             verb=Verb.ADDED_TAG,
             action_object=Tag.objects.get(name=new_tag),
             target=obj,
