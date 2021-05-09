@@ -46,3 +46,17 @@
   {% include "repo/_ownership.html" with type="module" %}
 
 {% endblock content %}
+
+{% block inline_javascript %}
+  <script type="application/javascript">
+    function submitHiddenTagRemoveForm(tagged_item_id, slug) {
+      if (!confirm("Remove tag " + slug + "?")) {
+        return null
+      }
+      let hiddenTagRemoveForm_tagged_item_id = document.getElementById("hiddenTagRemoveForm_tagged_item_id")
+      hiddenTagRemoveForm_tagged_item_id.setAttribute("value", tagged_item_id)
+      document.forms['hiddenTagRemoveForm'].submit()
+      return null
+    }
+  </script>
+{% endblock %}
