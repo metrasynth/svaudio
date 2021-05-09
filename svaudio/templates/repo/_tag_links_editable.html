@@ -1,0 +1,27 @@
+{# params: object modelname request #}
+{% with user=request.user %}
+  {% if not user.is_authenticated %}
+    {% include "repo/_tag_links.html" %}
+  {% else %}
+    <ul class="list-inline">
+      {% for tag_item in object.tagged_items.all %}
+        {% with tag=tag_item.tag added_by=tag_item.added_by recently_added=tag_item.recently_added %}
+          <li class="list-inline-item">
+            <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge bg-primary">#{{ tag.name }}</span></a>
+            {% if user.is_moderator or recently_added and added_by == user %}
+              <span onclick="submitHiddenTagRemoveForm({{ tag_item.id }}, '{{ tag.slug }}')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-x-square-fill" viewBox="0 0 16 16">
+                  <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z"/>
+                </svg>
+              </span>
+            {% endif %}
+          </li>
+        {% endwith %}
+      {% endfor %}
+    </ul>
+    <form name="hiddenTagRemoveForm" action="{% url 'repo:project-remove-tagged-item' hash=object.file.hash %}" method="post">
+      <input type="hidden" name="tagged_item_id" id="hiddenTagRemoveForm_tagged_item_id" value="">
+      {% csrf_token %}
+    </form>
+  {% endif %}
+{% endwith %}

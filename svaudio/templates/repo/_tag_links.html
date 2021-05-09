@@ -1,0 +1,11 @@
+{# params: object modelname #}
+{% load cache %}
+{% cache None object-tag-list modelname object.pk %}
+  <ul class="list-inline">
+    {% for tag in object.tags.all %}
+      <li class="list-inline-item">
+        <a href="{% url 'tags:tag-detail' slug=tag.slug %}"><span class="badge bg-primary">#{{ tag.name }}</span></a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endcache %}

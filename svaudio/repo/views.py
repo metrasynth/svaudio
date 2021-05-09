@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from ..claims.models import Claim
-from ..tags.models import Tag
+from ..tags.models import Tag, TaggedItem
 from ..verbs import Verb
 from . import models as m
 
@@ -183,12 +183,21 @@ def module_add_tag_view(request, hash):
     return _add_tag_view("module", request, hash)
 
 
+def module_remove_tagged_item_view(request, hash):
+    return _remove_tagged_item_view("module", request, hash)
+
+
 def project_add_tag_view(request, hash):
     return _add_tag_view("project", request, hash)
 
 
+def project_remove_tagged_item_view(request, hash):
+    return _remove_tagged_item_view("project", request, hash)
+
+
 def _add_tag_view(modelname, request, hash):
-    if not request.user.is_authenticated:
+    user = request.user
+    if not user.is_authenticated:
         return redirect(f"repo:{modelname}-detail", hash=hash)
     model = {"module": m.Module, "project": m.Project}[modelname]
     obj = get_object_or_404(model, file__hash=hash)
@@ -198,11 +207,11 @@ def _add_tag_view(modelname, request, hash):
     tags = [t[1:] if t[0:1] == "#" else t for t in tags]
     tags = {t for t in tags if t}
     existing_tags = {t.name for t in obj.tags.all()}
-    new_tags = tags - existing_tags
+    new_tags = list(sorted(tags - existing_tags))
+    obj.tags.add_by_user(user, *new_tags)
     for new_tag in new_tags:
-        obj.tags.add(new_tag)
         action.send(
-            request.user,
+            sender=user,
             verb=Verb.ADDED_TAG,
             action_object=Tag.objects.get(name=new_tag),
             target=obj,
@@ -214,4 +223,34 @@ def _add_tag_view(modelname, request, hash):
         f"You added {count} new tag{'s' if count != 1 else ''}. Thanks!",
     )
     obj.clear_caches()
+    return redirect(f"repo:{modelname}-detail", hash=hash)
+
+
+def _remove_tagged_item_view(modelname, request, hash):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect(f"repo:{modelname}-detail", hash=hash)
+    model = {"module": m.Module, "project": m.Project}[modelname]
+    obj = get_object_or_404(model, file__hash=hash)
+    tagged_item_id = request.POST["tagged_item_id"]
+    tagged_items = obj.tagged_items.filter(id=tagged_item_id)
+    tagged_item: TaggedItem
+    for tagged_item in tagged_items:
+        if request.user.is_moderator or (
+            tagged_item.recently_added() and tagged_item.added_by == user
+        ):
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                f"You removed the {tagged_item.tag.name!r} tag.",
+            )
+            action.send(
+                sender=user,
+                verb=Verb.REMOVED_TAG,
+                action_object=tagged_item.tag,
+                target=obj,
+            )
+            tagged_item.delete()
+            obj.clear_caches()
+            break
     return redirect(f"repo:{modelname}-detail", hash=hash)

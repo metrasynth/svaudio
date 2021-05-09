@@ -2,22 +2,22 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Project</th>
+      <th scope="col">Module</th>
       <th scope="col">Added</th>
     </tr>
   </thead>
   <tbody>
-    {% for project in object_list %}
+    {% for module in object_list %}
       {% if tag_items %}
-        {% with project.content_object as project %}
-          {% include "_fragments/_project_table_row.html" %}
+        {% with module.content_object as module %}
+          {% include "repo/_module_table_row.html" %}
         {% endwith %}
       {% else %}
-        {% include "_fragments/_project_table_row.html" %}
+        {% include "repo/_module_table_row.html" %}
       {% endif %}
     {% empty %}
       <tr>
-        <td colspan="2">(No projects)</td>
+        <td colspan="2">(No modules)</td>
       </tr>
     {% endfor %}
   </tbody>
