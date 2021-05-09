@@ -239,5 +239,18 @@ def _remove_tagged_item_view(modelname, request, hash):
         if request.user.is_moderator or (
             tagged_item.recently_added() and tagged_item.added_by == user
         ):
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                f"You removed the {tagged_item.tag.name!r} tag.",
+            )
+            action.send(
+                sender=user,
+                verb=Verb.REMOVED_TAG,
+                action_object=tagged_item.tag,
+                target=obj,
+            )
             tagged_item.delete()
+            obj.clear_caches()
+            break
     return redirect(f"repo:{modelname}-detail", hash=hash)

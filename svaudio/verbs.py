@@ -3,6 +3,7 @@ from enum import Enum
 
 class Verb(str, Enum):
     ADDED_TAG = "added tag"
+    REMOVED_TAG = "removed tag"
 
     def __str__(self):
         return self.value
