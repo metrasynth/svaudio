@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.9-slim-buster
+ARG PYTHON_VERSION=3.10-slim-buster
 
 # define an alias for the specfic python version used in this file.
 FROM python:${PYTHON_VERSION} as python
@@ -16,11 +16,22 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libpq-dev
 
 # Requirements are installed here to ensure they will be cached.
-COPY ./requirements .
+RUN mkdir build
+WORKDIR build
+COPY ./requirements requirements
+COPY ./pyproject.toml .
+COPY ./poetry.lock .
+
+# Export poetry to requirements.txt
+RUN pip install poetry==1.1.13
+RUN poetry export --without-hashes -f requirements.txt \
+    --output ./requirements/poetry.txt && \
+    poetry export --dev --without-hashes -f requirements.txt \
+    --output ./requirements/poetry-dev.txt
 
 # Create Python Dependency and Sub-Dependency Wheels.
 RUN pip wheel --wheel-dir /usr/src/app/wheels  \
-  -r ${BUILD_ENVIRONMENT}.txt
+  -r requirements/${BUILD_ENVIRONMENT}.txt
 
 
 # Python 'run' stage
