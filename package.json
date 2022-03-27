@@ -19,7 +19,7 @@
     "popper.js": "^1.14.3"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=16"
   },
   "browserslist": [
     "last 2 versions"
