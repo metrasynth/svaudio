@@ -48,7 +48,7 @@ setuptools = "^61.1.1"
 flower = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
-Werkzeug = "^2.0.3"
+Werkzeug = "~2.0.3"
 ipdb = "^0.13.9"
 watchgod = "^0.8.1"
 watchdog = "^2.1.7"
