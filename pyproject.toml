@@ -6,7 +6,7 @@ authors = ["Matthew Scott <matt@11craft.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.10.2"
+python = "3.10.4"
 radiant-voices = {url = "https://github.com/metrasynth/radiant-voices/archive/fd9ff7e94410d55cdc7bb5b33dedb67e5b326f5e.zip"}
 pytz = "^2022.1"
 python-slugify = "^6.1.1"
