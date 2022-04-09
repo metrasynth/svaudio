@@ -3,38 +3,26 @@ sunvox.audio
 
 Backend for the `sunvox.audio <https://sunvox.audio/>`__ website.
 
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter
-     :target: https://github.com/pydanny/cookiecutter-django/
-     :alt: Built with Cookiecutter Django
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-     :target: https://github.com/ambv/black
-     :alt: Black code style
-
 :License: MIT
 
 We encourage you to join in on the fun!
 
-That said, this is not intended to be used outside of being hosted at
-`sunvox.audio <https://sunvox.audio/>`__ or beta/staging sites maintained by its developers.
-
-If you fork this with the intention of making a new site, please be sure to change the name
-to something other than "sunvox.audio".
-
-Thanks!
-
-
-Settings
+Branding
 --------
 
-Moved to settings_.
+This is not intended to be used outside of being hosted at
+`sunvox.audio <https://sunvox.audio/>`__ or beta/staging sites maintained by its developers.
 
-.. _settings: http://cookiecutter-django.readthedocs.io/en/latest/settings.html
+If you fork this with the intention of making a new site,
+please be sure to change the name to something other than "sunvox.audio".
+
+Thanks!
 
 Basic Commands
 --------------
 
 Setting Up Your Users
-^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~
 
 * To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
 
@@ -45,7 +33,7 @@ Setting Up Your Users
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
 Type checks
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 Running type checks with mypy:
 
@@ -54,7 +42,7 @@ Running type checks with mypy:
   $ mypy svaudio
 
 Test coverage
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
 
 To run the tests, check your test coverage, and generate an HTML coverage report::
 
@@ -63,14 +51,14 @@ To run the tests, check your test coverage, and generate an HTML coverage report
     $ open htmlcov/index.html
 
 Running tests with py.test
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+..........................
 
 ::
 
   $ pytest
 
 Live reloading and Sass CSS compilation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Moved to `Live reloading and SASS compilation`_.
 
@@ -79,7 +67,7 @@ Moved to `Live reloading and SASS compilation`_.
 
 
 Celery
-^^^^^^
+~~~~~~
 
 This app comes with Celery.
 
@@ -101,7 +89,7 @@ You can limit it to a certain number like this:
 Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
 
 Email Server
-^^^^^^^^^^^^
+~~~~~~~~~~~~
 
 In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use `MailHog`_ when generating the project a local SMTP server with a web interface will be available.
 
@@ -129,11 +117,15 @@ Now you have your own mail server running locally, ready to receive whatever you
 
 
 Primary author's dev setup
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Machine:
+
+- M1-based Mac
 
 Tools:
 
-- MacOS 11.2.3
+- MacOS 12.3
 - Homebrew
 - Postgres
 - Redis
@@ -156,10 +148,8 @@ Deployment
 The following details how to deploy this application.
 
 
-
-
 Custom Bootstrap Compilation
-^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The generated CSS is set up with automatic Bootstrap recompilation with variables of your choice.
 Bootstrap v4 is installed using npm and customised by tweaking your variables in ``static/sass/custom_bootstrap_vars``.
