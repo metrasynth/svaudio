@@ -130,7 +130,7 @@ function initBrowserSync() {
         `${paths.templates}/*.html`
       ], {
         // https://www.browsersync.io/docs/options/#option-proxy
-        proxy: 'django:8000'
+        proxy: 'django:8080'
 
       }
     )
