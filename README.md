@@ -27,7 +27,7 @@ Then, run this to bring up your stack:
 
 When everything is running you should be able to visit these sites:
 
-* [Django server at http://localhost:8000](http://localhost:8000)
+* [Django server at http://localhost:8080](http://localhost:8080)
 * [Mailhog server at http://localhost:8025](http://localhost:8025)
 
 ## Basic Commands
