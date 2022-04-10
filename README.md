@@ -21,7 +21,15 @@ Thanks!
 
 First, install the latest version of docker.
 
-Then, run this to bring up your stack:
+Next, build the stack to make sure that part succeeds:
+
+    $ docker compose build
+
+Initialize your database by running this:
+
+    $ docker compose run --rm django ./manage.py migrate
+
+Then, bring up the rest of the backend stack:
 
     $ docker compose up
 
@@ -36,7 +44,7 @@ When everything is running you should be able to visit these sites:
 
 To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your [Mailhog server](http://localhost:8025) to see a simulated email verification message. Click the link. Now the user's email should be verified and ready to go.
 
-To create an **superuser account**, use this command:
+To create an **superuser account**, use this command while the stack is running:
 
     $ ./django.sh ./manage.py createsuperuser
 
