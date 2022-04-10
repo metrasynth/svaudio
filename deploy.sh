@@ -1,6 +1,9 @@
 #!/bin/bash
 #
 # usage: venv/bin/dotenv run svaudio/deploy.sh
+#
+# DEPRECATED:
+# This is used to host on a non-Dokku host with a bespoke setup.
 
 source venv/bin/activate
 set -ex

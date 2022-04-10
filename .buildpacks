@@ -1,0 +1,4 @@
+https://github.com/moneymeets/python-poetry-buildpack.git
+heroku/nodejs
+heroku/python
+https://github.com/ojarva/django-compressor-heroku-buildpack.git

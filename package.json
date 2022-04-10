@@ -12,14 +12,15 @@
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^8.0.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^5.1.0",
     "gulp-uglify-es": "^1.0.4",
     "jquery": "3.5.0",
+    "node-sass": "^7.0.1",
     "pixrem": "^5.0.0",
     "popper.js": "^1.14.3"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=16"
   },
   "browserslist": [
     "last 2 versions"
