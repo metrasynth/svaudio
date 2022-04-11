@@ -47,6 +47,7 @@ django-anymail = "^8.5"
 setuptools = "^61.1.1"
 flower = "^1.0.0"
 bleach = "^4.1.0"
+django-graphql-jwt = "^0.3.4"
 
 [tool.poetry.dev-dependencies]
 Werkzeug = "~2.0.3"
