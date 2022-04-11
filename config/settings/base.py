@@ -101,6 +101,7 @@ MIGRATION_MODULES = {"sites": "svaudio.contrib.sites.migrations"}
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
@@ -332,7 +333,12 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
 # graphene
 # ------------------------------------------------------------------------------
-GRAPHENE = {"SCHEMA": "svaudio.schema.schema"}
+GRAPHENE = {
+    "SCHEMA": "svaudio.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
 
 # django-markdownify
 INSTALLED_APPS += ["markdownify"]
